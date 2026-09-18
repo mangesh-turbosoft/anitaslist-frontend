@@ -42,9 +42,7 @@ export function DetailPage({ detail, variant, eyebrow, back, shareLink, sharePas
           <NoteSlider notes={detail.notes} />
         </div>
       </Container>
-      <div className="mt-[25px]">
-        <FixedBarClient totalPence={detail.totalPence} variant={variant} />
-      </div>
+      <FixedBarClient totalPence={detail.totalPence} variant={variant} />
       <div className="relative">
         <Banner image={detail.banner} />
         {variant !== "shared" && (

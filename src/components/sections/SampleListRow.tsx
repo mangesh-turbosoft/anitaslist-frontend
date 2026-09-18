@@ -14,7 +14,7 @@ export function SampleListRow({ id, eyebrow, heading, note, items }: SampleListR
   const headingId = `${id}-heading`;
   return (
     <section aria-labelledby={headingId}>
-      <Carousel label={eyebrow}>
+      <Carousel label={eyebrow} loop>
         <Container className="grid grid-cols-1 xl:grid-cols-[447px_minmax(0,1fr)]">
           <div className="flex flex-col pt-[50px] xl:border-r-[0.5px] xl:border-sand">
             <Eyebrow>{eyebrow}</Eyebrow>

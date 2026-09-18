@@ -52,7 +52,7 @@ export function FixedBar({
         : [];
 
   return (
-    <div className="sticky top-0 z-30 border-y-[0.5px] border-sand bg-bone">
+    <div className="sticky top-[93px] z-30 mt-[25px] border-y-[0.5px] border-sand bg-bone xl:top-20">
       <Container className="flex min-h-[73px] flex-wrap items-stretch justify-between gap-x-6">
         <div className="flex items-center gap-[10px] py-[19px]">
           <p className="font-display text-h3 font-medium">Total: {formatGBP(totalPence)}</p>

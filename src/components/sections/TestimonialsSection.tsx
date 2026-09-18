@@ -11,7 +11,7 @@ import type { HomeContent } from "@/types/content";
 export function TestimonialsSection({ eyebrow, heading, items }: HomeContent["testimonials"]) {
   return (
     <section aria-labelledby="testimonials-heading">
-      <Carousel label={eyebrow}>
+      <Carousel label={eyebrow} loop>
         <Container className="grid grid-cols-1 xl:grid-cols-[447px_minmax(0,1fr)]">
           <div className="flex flex-col pt-[50px] xl:min-h-[368px] xl:border-r-[0.5px] xl:border-sand xl:pr-[21px]">
             <Eyebrow>{eyebrow}</Eyebrow>

@@ -12,7 +12,7 @@ import type { NoteSlide } from "@/types/content";
 export function NoteSlider({ notes, className }: { notes: NoteSlide[]; className?: string }) {
   return (
     <div className="max-w-[660px]">
-      <Carousel label="Notes from Anita" className={className ? `relative ${className}` : "relative"}>
+      <Carousel label="Notes from Anita" className={className ? `relative ${className}` : "relative"} loop>
         <CarouselTrack>
           {notes.map((n, i) => (
             <CarouselSlide key={n.id} aria-label={`${i + 1} of ${notes.length}`} className="flex h-[197px] w-full max-w-[660px]">

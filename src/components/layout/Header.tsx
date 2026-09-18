@@ -10,11 +10,10 @@ import { NavLinks } from "./NavLinks";
  * Figma desktop (886:23): 1440x80 #F8F8F2; logo 184x32 at x=30; links from x=244 at ~48px gaps;
  * right group Search + icon, Login, Create account 149x40 ending at x=1410.
  * Figma mobile (51:411): 402x93; 55x50 mark at x=16; search icon + hamburger at the right.
- * Not sticky - nothing in the file indicates it (plan section 18 q3).
  */
 export function Header() {
   return (
-    <header className="bg-cream">
+    <header className="sticky top-0 z-40 bg-cream">
       <Container className="flex h-[93px] items-center xl:h-20">
         <Link href="/" aria-label="Anita’s List home" className="shrink-0 text-ink-alt">
           <IconLogo className="hidden h-8 w-[184px] xl:block" />

@@ -7,14 +7,17 @@ import type { HomeContent } from "@/types/content";
 
 /**
  * Figma (974:9171): 1440x666. Heading row: eyebrow left, "1 2 3 4" + arrows right, all centred in the 46px row.
- * Cards 476x585 with a 6px gap start at y=80 and run edge to edge (3 x 476 + 2 x 6 = 1440); full-bleed per the
- * banners rule. Each card: cropped photo, a bone->cream fade over the lower 418px, category name P22 400 32/44
- * at (30, bottom 20), and a 33x33 #C77065 chevron button flush to the bottom-right corner. Hairline below.
+ * Cards 476x585 with a 6px gap start at y=80 and run edge to edge (3 x 476 + 2 x 6 = 1440) at the comp width;
+ * full-bleed per the banners rule. At any other viewport width, `fitWhole` stretches whichever whole number of
+ * cards fits (aspect-ratio keeps each one in proportion) to use the full width with none left over or cropped -
+ * product request, not in Figma, which only draws the one 1440 comp. Each card: cropped photo, a bone->cream
+ * fade over the lower 418px, category name P22 400 32/44 at (30, bottom 20), and a 33x33 #C77065 chevron button
+ * flush to the bottom-right corner. Hairline below.
  */
 export function ProductCategoriesSection({ eyebrow, items }: HomeContent["categories"]) {
   return (
     <section aria-label={eyebrow} className="pt-10">
-      <Carousel label={eyebrow}>
+      <Carousel label={eyebrow} loop fitWhole>
         <Container className="flex items-center justify-between gap-6">
           <Eyebrow className="max-w-[1028px]">{eyebrow}</Eyebrow>
           <div className="flex items-center gap-[21px]">

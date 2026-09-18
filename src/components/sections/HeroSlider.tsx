@@ -5,19 +5,22 @@ import { cn } from "@/lib/cn";
 import type { HeroContent } from "@/types/content";
 
 /**
- * Marketing hero, full viewport width (banners rule), 1440x649 at the comp width.
+ * Marketing hero, full viewport width (banners rule); Figma comp is 1440x649 but the image height is fixed at
+ * 700px on desktop (product request, not in Figma) - the rating's bottom anchor keeps it clear of the CTA either way.
  * Measured on Home (887:89), About (974:9256) and Sample list heroes - all share one geometry:
  *   eyebrow Noto 600 16/22 UPPER at y=109 · H1 P22 400 48/60 at y=141 (563 wide) · body Noto 15/22 at y=409 (447 wide)
  *   · CTA 40px at y=479 · rating block at y=550 · 14x15 dots at y≈605, right-aligned to the container.
- * Sample list adds a 1060px cream -> transparent scrim from the left edge. Home and About paginate (4 dots).
+ * Sample list adds a 1060px cream -> transparent scrim from the left edge. Home and About paginate (4 dots) and
+ * autoplay/loop (product request, not in Figma) - manual arrows aren't part of this layout so pausing needs
+ * hover/focus rather than a visible control.
  */
 export function HeroSlider({ slides, eyebrow, cta, rating, scrim = false }: HeroContent) {
   return (
-    <Carousel label="Introduction" className="relative">
+    <Carousel label="Introduction" className="relative" loop autoplayMs={6000}>
       <CarouselTrack>
         {slides.map((slide, i) => (
           <CarouselSlide key={slide.id} className="relative w-full" aria-label={`${i + 1} of ${slides.length}`}>
-            <div className="relative min-h-[560px] w-full xl:aspect-[1440/649] xl:min-h-0">
+            <div className="relative min-h-[560px] w-full xl:h-[700px] xl:min-h-0">
               <Image src={slide.image.src} alt={slide.image.alt} fill priority={i === 0} sizes="100vw" className="object-cover" />
               {scrim && (
                 <span aria-hidden="true" className="absolute inset-y-0 left-0 w-[1060px] max-w-full bg-gradient-to-r from-cream to-cream/0" />

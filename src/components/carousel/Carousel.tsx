@@ -1,14 +1,20 @@
 "use client";
 
 import {
+  Children,
+  cloneElement,
   createContext,
+  isValidElement,
   useCallback,
   useContext,
   useEffect,
   useId,
+  useLayoutEffect,
   useRef,
   useState,
+  type Attributes,
   type ComponentPropsWithoutRef,
+  type ReactElement,
   type ReactNode,
 } from "react";
 import { IconArrowLong } from "@/components/icons";
@@ -17,7 +23,11 @@ import { cn } from "@/lib/cn";
 /**
  * Scroll-snap carousel. One primitive covers the four layouts in the design:
  * hero (dots), testimonials (dots + arrows), product categories (numbers + arrows), sample-list rows (arrows).
- * Behaviour not specified by Figma (autoplay, looping) is left out: manual, clamped, one slide per press.
+ * Looping is opt-in (`loop`) - Figma doesn't specify it, so call sites that want it ask for it explicitly.
+ * When on, CarouselTrack renders a hidden, inert clone of the whole slide set on each side of the real one, so
+ * stepping past either end keeps scrolling in the SAME direction into a clone that looks identical to the real
+ * target slide; once that scroll settles we silently re-point scrollLeft at the real slide. That's what makes
+ * the wrap seamless instead of a visible rewind back through every slide.
  */
 
 type Api = {
@@ -25,6 +35,9 @@ type Api = {
   count: number;
   /** How many whole slides currently fit in the visible track — needed to turn item count into page count. */
   perView: number;
+  /** Distinct stopping positions: count - perView + 1. */
+  pages: number;
+  loop: boolean;
   canPrev: boolean;
   canNext: boolean;
   prev: () => void;
@@ -42,82 +55,220 @@ export function useCarousel(): Api {
   return api;
 }
 
-export function Carousel({ children, className, label }: { children: ReactNode; className?: string; label: string }) {
+/** Reads live geometry straight off the DOM rather than trusting React state, since goTo/next/prev/settle all fire from events and need this instant's truth, not the last render's. */
+function readTrack(t: HTMLUListElement) {
+  const items = Array.from(t.children) as HTMLElement[];
+  const realCount = items.filter((el) => !el.hasAttribute("data-clone")).length;
+  const looping = items.length > realCount;
+  const headCount = looping ? realCount : 0;
+  const cs = getComputedStyle(t);
+  const gap = parseFloat(cs.columnGap || "0") || 0;
+  const step = (items[0]?.offsetWidth ?? 0) + gap;
+  const domIndex = step > 0 ? Math.round(t.scrollLeft / step) : 0;
+  return { items, realCount, headCount, step, gap, domIndex };
+}
+
+function scrollToDomIndex(t: HTMLUListElement, domIndex: number, behavior: ScrollBehavior) {
+  const target = t.children[domIndex] as HTMLElement | undefined;
+  if (!target) return;
+  t.scrollTo({ left: target.offsetLeft, behavior });
+}
+
+function prefersReducedMotion() {
+  return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+export function Carousel({
+  children,
+  className,
+  label,
+  loop = false,
+  autoplayMs,
+  fitWhole = false,
+}: {
+  children: ReactNode;
+  className?: string;
+  label: string;
+  /** Wrap prev/next/dots past the first/last slide seamlessly instead of clamping. */
+  loop?: boolean;
+  /** Auto-advance one slide every N ms. Paused on hover/focus and skipped under prefers-reduced-motion. */
+  autoplayMs?: number;
+  /**
+   * Stretch slides so a whole number of them exactly fill the track's own width, instead of a fractional one
+   * peeking (and getting clipped) at the trailing edge. Needed for fixed-width slides in a full-bleed track,
+   * where slide+gap isn't a multiple of the viewport at most widths; skip it for slides sized in vw, where
+   * that peek is the intended "there's more" affordance. The slide's own CSS width is only the reference used
+   * to decide how many fit - actual rendered width is computed here and applied directly to each slide (real
+   * and clone alike), so the full-bleed width is always used edge to edge with none left over or cut.
+   */
+  fitWhole?: boolean;
+}) {
   const trackRef = useRef<HTMLUListElement | null>(null);
+  const regionRef = useRef<HTMLDivElement | null>(null);
+  const naturalStepRef = useRef<number | null>(null);
   const [index, setIndex] = useState(0);
   const [count, setCount] = useState(0);
   const [perView, setPerView] = useState(1);
+  const [paused, setPaused] = useState(false);
   const id = useId();
 
   const measure = useCallback(() => {
     const t = trackRef.current;
     if (!t) return;
-    const items = Array.from(t.children) as HTMLElement[];
-    setCount(items.length);
-    if (!items.length) return;
+    const { items, realCount, headCount, step, gap, domIndex } = readTrack(t);
+    setCount(realCount);
+    if (!realCount) return;
     const cs = getComputedStyle(t);
     // Keep scroll-snap's "safe area" in sync with the track's own padding. Without this, a scroll-snap
     // container with side padding auto-scrolls on load to snap the first slide flush against the bare
     // edge, silently cancelling that padding and pushing an equal gap onto the opposite end instead.
     t.style.scrollPaddingLeft = cs.paddingLeft;
     t.style.scrollPaddingRight = cs.paddingRight;
-    const gap = parseFloat(cs.columnGap || "0") || 0;
-    const step = items[0].offsetWidth + gap;
-    setIndex(step > 0 ? Math.round(t.scrollLeft / step) : 0);
-    setPerView(step > 0 ? Math.max(1, Math.floor((t.clientWidth + gap + 1) / step)) : 1);
+    const realIndex = headCount ? (((domIndex - headCount) % realCount) + realCount) % realCount : domIndex;
+    setIndex(realIndex);
+    if (fitWhole) {
+      // Cache the slide's natural (CSS-declared) width the first time, before any fluid override is applied -
+      // reading it fresh on later measures would be reading our own previous override, not the reference size.
+      if (naturalStepRef.current == null) naturalStepRef.current = step;
+      const refStep = naturalStepRef.current;
+      const available = regionRef.current?.clientWidth ?? t.clientWidth;
+      const pv = refStep > 0 ? Math.max(1, Math.floor((available + gap + 1) / refStep)) : 1;
+      setPerView(pv);
+      const fluidWidth = pv > 0 ? (available - (pv - 1) * gap) / pv : refStep - gap;
+      // Slides typically also carry a `max-w-[Npx]` cap (so they don't grow past their design size on an
+      // ordinary container-width page) - max-width always wins over a larger `width` regardless of origin or
+      // specificity, inline included, so it has to be overridden too or the fluid width above gets clamped back.
+      for (const el of items) {
+        el.style.width = `${fluidWidth}px`;
+        el.style.maxWidth = `${fluidWidth}px`;
+      }
+    } else {
+      setPerView(step > 0 ? Math.max(1, Math.floor((t.clientWidth + gap + 1) / step)) : 1);
+    }
+  }, [fitWhole]);
+
+  // Once scrolling stops, pull scrollLeft back from a clone region onto the equivalent real slide - instant,
+  // so it lands while the (visually identical) clone is still on screen and nothing appears to move.
+  const settle = useCallback(() => {
+    const t = trackRef.current;
+    if (!t) return;
+    const { realCount, headCount, domIndex } = readTrack(t);
+    if (!headCount) return;
+    if (domIndex < headCount) scrollToDomIndex(t, domIndex + realCount, "instant");
+    else if (domIndex >= headCount + realCount) scrollToDomIndex(t, domIndex - realCount, "instant");
   }, []);
+
+  useLayoutEffect(() => {
+    const t = trackRef.current;
+    if (!t) return;
+    const { headCount } = readTrack(t);
+    if (headCount) scrollToDomIndex(t, headCount, "instant");
+    measure();
+  }, [measure]);
 
   useEffect(() => {
     const t = trackRef.current;
     if (!t) return;
-    measure();
     const ro = new ResizeObserver(measure);
-    ro.observe(t);
+    ro.observe(fitWhole && regionRef.current ? regionRef.current : t);
     t.addEventListener("scroll", measure, { passive: true });
+    t.addEventListener("scrollend", settle, { passive: true });
     return () => {
       ro.disconnect();
       t.removeEventListener("scroll", measure);
+      t.removeEventListener("scrollend", settle);
     };
-  }, [measure]);
+  }, [measure, settle, fitWhole]);
 
   const goTo = useCallback((i: number) => {
     const t = trackRef.current;
     if (!t) return;
-    const items = t.children;
-    const target = items[Math.max(0, Math.min(i, items.length - 1))] as HTMLElement | undefined;
-    if (!target) return;
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    t.scrollTo({ left: target.offsetLeft, behavior: reduce ? "auto" : "smooth" });
+    const { realCount, headCount } = readTrack(t);
+    if (!realCount) return;
+    const clamped = Math.max(0, Math.min(i, realCount - 1));
+    scrollToDomIndex(t, headCount + clamped, prefersReducedMotion() ? "instant" : "smooth");
   }, []);
 
-  const canPrev = index > 0;
-  const canNext = index < count - perView;
+  // next/prev always step one DOM position in the requested direction - when looping that can walk straight
+  // into a clone, which is the point: the motion never reverses, only the silent settle() after repositions it.
+  const step = useCallback((dir: 1 | -1) => {
+    const t = trackRef.current;
+    if (!t) return;
+    const { realCount, headCount, domIndex } = readTrack(t);
+    if (!realCount) return;
+    const next = headCount ? domIndex + dir : Math.max(0, Math.min(domIndex + dir, realCount - 1));
+    scrollToDomIndex(t, next, prefersReducedMotion() ? "instant" : "smooth");
+  }, []);
+
+  const pages = Math.max(1, count - perView + 1);
+  const canPrev = loop ? pages > 1 : index > 0;
+  const canNext = loop ? pages > 1 : index < count - perView;
 
   const api: Api = {
     index,
     count,
     perView,
+    pages,
+    loop,
     canPrev,
     canNext,
-    prev: () => goTo(index - 1),
-    next: () => goTo(index + 1),
+    prev: () => step(-1),
+    next: () => step(1),
     goTo,
     trackRef,
     id,
   };
 
+  // `step` closes over no render-time state (it re-reads the DOM fresh each call), so it's safe to depend on
+  // directly here instead of needing a "latest ref" indirection to dodge stale closures.
+  useEffect(() => {
+    if (!autoplayMs || pages < 2 || paused || prefersReducedMotion()) return;
+    const timer = setInterval(() => step(1), autoplayMs);
+    return () => clearInterval(timer);
+  }, [autoplayMs, pages, paused, step]);
+
   return (
     <Ctx.Provider value={api}>
-      <div className={cn("min-w-0 max-w-full", className)} role="region" aria-roledescription="carousel" aria-label={label}>
+      <div
+        ref={regionRef}
+        className={cn("min-w-0 max-w-full", className)}
+        role="region"
+        aria-roledescription="carousel"
+        aria-label={label}
+        onMouseEnter={autoplayMs ? () => setPaused(true) : undefined}
+        onMouseLeave={autoplayMs ? () => setPaused(false) : undefined}
+        onFocus={autoplayMs ? () => setPaused(true) : undefined}
+        onBlur={autoplayMs ? () => setPaused(false) : undefined}
+      >
         {children}
       </div>
     </Ctx.Provider>
   );
 }
 
+type SlideElement = ReactElement<ComponentPropsWithoutRef<"li">>;
+type SlideExtraProps = Partial<ComponentPropsWithoutRef<"li">> & Attributes;
+
+function cloneHidden(child: ReactNode, key: string): ReactNode {
+  if (!isValidElement(child)) return child;
+  // `data-clone` is a plain marker attribute the DOM allows but React's LiHTMLAttributes type doesn't name -
+  // routing the literal through `unknown` is the standard escape hatch for that gap.
+  const extra = { key, "data-clone": "true", "aria-hidden": true, inert: true } as unknown as SlideExtraProps;
+  return cloneElement(child as SlideElement, extra);
+}
+
 /** The scrolling row. Children must be <CarouselSlide>. Gap is set by the caller via className (e.g. gap-[6px]). */
 export function CarouselTrack({ className, children, ...rest }: ComponentPropsWithoutRef<"ul">) {
-  const { trackRef, id } = useCarousel();
+  const { trackRef, id, loop } = useCarousel();
+  const items = Children.toArray(children);
+  const canLoop = loop && items.length >= 2;
+  const rendered = canLoop
+    ? [
+        ...items.map((child, i) => cloneHidden(child, `clone-head-${i}`)),
+        ...items,
+        ...items.map((child, i) => cloneHidden(child, `clone-tail-${i}`)),
+      ]
+    : items;
   return (
     <ul
       ref={trackRef}
@@ -128,7 +279,7 @@ export function CarouselTrack({ className, children, ...rest }: ComponentPropsWi
       )}
       {...rest}
     >
-      {children}
+      {rendered}
     </ul>
   );
 }
@@ -146,10 +297,7 @@ export function CarouselSlide({ className, children, ...rest }: ComponentPropsWi
  * dark (testimonials): active #2D1A14, inactive same @30%. light (hero): active #CEBFA7, inactive #F8F8F2 @30%.
  */
 export function CarouselDots({ tone = "dark", size = "md", className }: { tone?: "dark" | "light"; size?: "md" | "sm"; className?: string }) {
-  const { index, count, perView, goTo, id } = useCarousel();
-  // Dots mark stopping positions ("pages"), not raw items - with N items and M shown at once there are only
-  // N - M + 1 distinct places to land. Using the item count here would draw dots with nowhere new to go to.
-  const pages = Math.max(1, count - perView + 1);
+  const { index, pages, goTo, id } = useCarousel();
   if (pages < 2) return null;
   return (
     <div className={cn("flex items-center", size === "sm" ? "gap-3" : "gap-3.5", className)} role="tablist" aria-label="Slides">

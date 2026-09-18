@@ -11,7 +11,7 @@ export function ProductsRow({ id, heading, items }: ProductsRowData) {
   const headingId = `${id}-heading`;
   return (
     <section aria-labelledby={headingId}>
-      <Carousel label={heading}>
+      <Carousel label={heading} loop>
         <Container>
           <div className="flex h-11 items-center justify-between">
             <h2 id={headingId} className="text-h2">
