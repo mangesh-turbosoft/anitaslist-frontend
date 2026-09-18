@@ -1,26 +1,128 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ------------------------------------------------------------------
+   Design tokens — every value read off resolved Figma nodes.
+   File: DeeYAcafkCD6DuBvs2pkOH · pages "Desktop Page Templates V2" + "Light boxes"
+   ------------------------------------------------------------------ */
+@theme {
+  /* Colour (usage counts in comments = occurrences across the in-scope pages) */
+  --color-ink: #2d1a14;        /* 3,050 — primary text, dark UI, borders */
+  --color-ink-alt: #382018;    /*   427 — logo, secondary dark */
+  --color-cream: #f8f8f2;      /*   912 — header bg, text on dark */
+  --color-terracotta: #c77065; /*   734 — primary CTA, accent */
+  --color-sand: #cebfa7;       /*   486 — footer bg, hairlines, input fill @50% */
+  --color-sage: #a0aa87;       /*   192 — accent, AI tool button */
+  --color-bone: #e6e4d8;       /*    85 — page background */
+  --color-gold: #e0bd5a;       /*    16 — progress bar fill */
+  --color-blush: #d89a94;      /*    10 — secondary CTA, CTA cards */
+  --color-green: #26a372;      /*    10 — success */
+  --color-muted-1: #5c4941;
+  --color-muted-2: #928983;
+  --color-muted-3: #beb6aa;
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* Font families — --font-p22 is defined by next/font/local once licensed (see src/fonts/README.md) */
+  --font-display: var(--font-p22, "P22 Mackinac Pro"), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-noto), "Noto Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Type scale — size / line-height pairs exactly as measured. Letter-spacing is 0 everywhere. */
+  --text-display: 48px;   --text-display--line-height: 60px;   /* P22 400 — page H1 / hero */
+  --text-h2: 32px;        --text-h2--line-height: 44px;        /* P22 400 — section headings */
+  --text-h3: 24px;        --text-h3--line-height: 34px;        /* P22 500 — card titles */
+  --text-h3-tall: 24px;   --text-h3-tall--line-height: 52px;   /* P22 500 — CTA card label */
+  --text-h4: 22px;        --text-h4--line-height: 32px;        /* P22 400 */
+  --text-eyebrow: 16px;   --text-eyebrow--line-height: 46px;   /* Noto 600 UPPER — section label; the tall LH is the spacing device */
+  --text-eyebrow-sm: 16px;--text-eyebrow-sm--line-height: 26px;/* Noto 600 UPPER — compact variant */
+  --text-eyebrow-xs: 16px;--text-eyebrow-xs--line-height: 22px;/* Noto 600 UPPER — hero eyebrow */
+  --text-stat: 48px;      --text-stat--line-height: 34px;      /* P22 700 — About stats */
+  --text-label: 16px;     --text-label--line-height: 19px;     /* P22 500 — buttons, nav */
+  --text-label-md: 16px;  --text-label-md--line-height: 22px;  /* P22 500 — card meta */
+  --text-body: 15px;      --text-body--line-height: 22px;      /* Noto 400 — paragraphs */
+  --text-body-tall: 15px; --text-body-tall--line-height: 35px; /* Noto 400 — footer link list */
+  --text-input: 16px;     --text-input--line-height: 44px;     /* Noto 400 — footer email */
+  --text-meta: 12px;      --text-meta--line-height: 22px;      /* Noto 400 — helper links */
+  --text-legal: 11px;     --text-legal--line-height: 18px;     /* Noto 400 — legal; P22 700 — copyright */
+  --text-micro: 8px;      --text-micro--line-height: 10px;     /* Noto 400 — dense UI */
+
+  /* Layout — 1440 frame, 30px side margins, 1380 content */
+  --container-page: 1440px;
+  --container-content: 1380px;
+  --container-narrow: 1200px; /* long-form content pages: FAQ, Terms, Privacy, Cookies, Contact — no Figma frame for these */
+  --breakpoint-2xl: 1440px; /* native comp width (Tailwind default is 1536) */
+
+  /* Radius — the design is square by default; these are the only exceptions found */
+  --radius-none: 0px;
+  --radius-xs: 2px;
+  --radius-pill: 30px;
+  --radius-circle: 50px;
+
+  /* Shadows — the only two in the file */
+  --shadow-ink: 0 1px 2px rgb(0 0 0 / 0.65);
+  --shadow-card: 0 7px 25px rgb(45 26 20 / 0.15);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background: var(--color-bone);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 400;
+  }
+  /* Design specifies no focus state; terracotta ring keeps keyboard users oriented (see plan §15) */
+  :focus-visible {
+    outline: 2px solid var(--color-terracotta);
+    outline-offset: 2px;
+  }
+  ::placeholder {
+    color: rgb(45 26 20 / 0.5);
+    opacity: 1;
+  }
+  /* Native <button> has no pointer cursor by default; every button in the app is clickable. */
+  button:not(:disabled) {
+    cursor: pointer;
+  }
+  /*
+   * The browser-native popup a <select> opens (not the closed field, which we style ourselves) renders
+   * <option> rows with no inset by default. Chromium/Edge respect padding here; Firefox/Safari mostly
+   * ignore it and fall back to their own native spacing, so this is a progressive enhancement, not a
+   * requirement, everywhere it doesn't apply.
+   */
+  select option {
+    padding: 8px 12px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .skip-link {
+    position: absolute;
+    left: 16px;
+    top: -100px;
+    z-index: 100;
+    padding: 8px 16px;
+    background: var(--color-ink);
+    color: var(--color-cream);
+    font-family: var(--font-display);
+    font-size: var(--text-label);
+    line-height: var(--text-label--line-height);
+  }
+  .skip-link:focus { top: 16px; }
 }
