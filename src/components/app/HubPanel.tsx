@@ -84,22 +84,31 @@ export function HubPanel({ title, rows: initialRows, action, legend, viewAll, ro
       {populated ? (
         <>
           <ul className="mt-[23px] flex flex-col gap-[10px]">
+            {/* Below sm, a fixed 70px-tall horizontal row leaves the title only ~130px next to a full-size
+                button and delete slot - real row names (not just the lorem ipsum placeholders) would still get
+                cut to a handful of characters. Stacking title-then-actions below sm gives the title the full
+                row width instead; sm and up is the exact original Figma row unchanged. */}
             {rows.slice(0, 4).map((row) => (
-              <li key={row.id} className="flex h-[70px] items-stretch border border-sand bg-cream/25">
-                {row.accent && <span aria-hidden="true" className={cn("w-[10px] shrink-0", ACCENT_BG[row.accent])} />}
-                <div className="flex min-w-0 flex-1 items-center pl-[19px]">
+              <li key={row.id} className="flex flex-col border border-sand bg-cream/25 sm:h-[70px] sm:flex-row sm:items-stretch">
+                {row.accent && <span aria-hidden="true" className={cn("h-[6px] w-full shrink-0 sm:h-auto sm:w-[10px] sm:self-stretch", ACCENT_BG[row.accent])} />}
+                <div className="flex min-w-0 flex-1 items-center px-[19px] py-[14px] sm:py-0 sm:pl-[19px] sm:pr-0">
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-display text-h3 font-medium">{row.title}</p>
                     {row.meta && <p className="font-sans text-body">{row.meta}</p>}
                   </div>
                 </div>
-                <div className="flex h-full shrink-0 items-center">
-                  <Link href={row.href} className="mr-[11px] inline-flex h-10 w-[116px] items-center justify-center bg-terracotta font-display text-label font-medium text-cream hover:opacity-90">
+                <div className="flex h-10 w-full shrink-0 items-stretch border-t border-sand sm:h-full sm:w-auto sm:border-t-0">
+                  {/* Fixed 116px matches Figma at xl; below that the button grows to fill the row (mobile) or
+                      hugs its label (tablet) instead of forcing the title down to a handful of characters. */}
+                  <Link
+                    href={row.href}
+                    className="mr-[11px] inline-flex h-10 flex-1 items-center justify-center whitespace-nowrap bg-terracotta px-3 font-display text-label font-medium text-cream hover:opacity-90 sm:h-full sm:flex-none xl:w-[116px] xl:px-0"
+                  >
                     {rowButtonLabel}
                   </Link>
                   {/* Slot is always reserved (border + width) so the button lands in the same place on every
                       row - only the icon inside is conditional on whether this row is deletable. */}
-                  <div className="flex h-full w-[53px] shrink-0 items-center justify-center border-l border-sand">
+                  <div className="flex h-10 w-[53px] shrink-0 items-center justify-center border-l border-sand sm:h-full">
                     {row.deletable !== false && (
                       <button type="button" onClick={() => remove(row.id)} aria-label={`Delete ${row.title}`} className="flex h-full w-full items-center justify-center text-ink hover:bg-sand/40">
                         <IconDelete className="size-8" />

@@ -31,8 +31,8 @@ export function ItemRow({ item, variant, onChange, onDelete }: { item: ListItem;
   const tierLabel = item.tier === "optional" ? "Optional" : item.tier === "recommended" ? "Recommended" : null;
 
   return (
-    <li className="relative flex min-h-[150px] flex-col border-[0.5px] border-sand lg:flex-row">
-      <div className="relative flex h-[150px] w-full shrink-0 items-center justify-center bg-sand lg:w-[150px]">
+    <li className="relative flex min-h-[150px] flex-col border-[0.5px] border-sand xl:flex-row">
+      <div className="relative flex h-[150px] w-full shrink-0 items-center justify-center bg-sand xl:w-[150px]">
         {item.image ? (
           <Image src={item.image.src} alt="" fill sizes="150px" className="object-cover" />
         ) : (
@@ -42,7 +42,7 @@ export function ItemRow({ item, variant, onChange, onDelete }: { item: ListItem;
         )}
       </div>
 
-      <div className={cn("relative min-w-0 flex-1 px-5 pb-5 pt-[22px] lg:flex-none lg:pr-0", variant === "registry" ? "lg:w-[395px]" : "lg:w-[451px]")}>
+      <div className={cn("relative min-w-0 flex-1 px-5 pb-5 pt-[22px] xl:flex-none xl:pr-0", variant === "registry" ? "xl:w-[395px]" : "xl:w-[451px]")}>
         <p className="font-display text-[16px] font-medium leading-5">
           {tierLabel && <b className="font-bold">{tierLabel} | </b>}
           {item.subcategory}
@@ -52,12 +52,12 @@ export function ItemRow({ item, variant, onChange, onDelete }: { item: ListItem;
       </div>
 
       {variant !== "shared" && (
-        <button type="button" aria-label={`Edit ${item.name}`} className="absolute right-4 top-4 text-ink hover:opacity-70 lg:left-[467px] lg:right-auto lg:top-[15px]">
+        <button type="button" aria-label={`Edit ${item.name}`} className="absolute right-4 top-4 text-ink hover:opacity-70 xl:left-[467px] xl:right-auto xl:top-[15px]">
           <IconPencil className="size-[30px]" />
         </button>
       )}
 
-      <div className={cn("flex flex-wrap items-center gap-x-6 gap-y-3 px-5 pb-5 lg:ml-auto lg:flex-nowrap lg:gap-x-0 lg:pl-0 lg:pt-[54px]", variant === "shared" ? "lg:pr-[74px]" : "lg:pr-[32px]")}>
+      <div className={cn("flex flex-wrap items-center gap-x-6 gap-y-3 px-5 pb-5 xl:ml-auto xl:flex-nowrap xl:gap-x-0 xl:pl-0 xl:pt-[54px]", variant === "shared" ? "xl:pr-[74px]" : "xl:pr-[32px]")}>
         {/* Quantity */}
         <div className="flex" role="group" aria-label="Quantity">
           <button type="button" onClick={() => onChange({ ...item, quantity: Math.max(1, item.quantity - 1) })} aria-label="Decrease quantity" className="flex size-10 items-center justify-center border border-sand">
@@ -70,7 +70,7 @@ export function ItemRow({ item, variant, onChange, onDelete }: { item: ListItem;
         </div>
 
         {/* Amount */}
-        <p className="w-[122px] text-center font-display text-label-md font-medium text-black lg:ml-[21px]">{formatGBP(item.pricePence * item.quantity)}</p>
+        <p className="w-[122px] text-center font-display text-label-md font-medium text-black xl:ml-[21px]">{formatGBP(item.pricePence * item.quantity)}</p>
 
         {/* Status */}
         <Select
@@ -78,19 +78,19 @@ export function ItemRow({ item, variant, onChange, onDelete }: { item: ListItem;
           options={STATUS}
           value={item.status}
           onChange={(v) => onChange({ ...item, status: v as ItemStatus })}
-          className="w-[125px] lg:ml-[30px]"
+          className="w-[125px] xl:ml-[30px]"
           fieldClassName="h-10 w-full border border-r-0 border-sand bg-transparent pl-3 font-display text-label font-medium text-ink"
           chevronClassName="h-10 w-[39px] border border-sand text-ink"
         />
 
         {/* Purchase */}
-        <button type="button" onClick={() => onChange({ ...item, status: "bought" })} className="h-10 w-24 bg-terracotta font-display text-label font-medium text-cream hover:opacity-90 lg:ml-[30px]">
+        <button type="button" onClick={() => onChange({ ...item, status: "bought" })} className="h-10 w-24 bg-terracotta font-display text-label font-medium text-cream hover:opacity-90 xl:ml-[30px]">
           Buy
         </button>
 
         {/* Reserved / Reserve / Save for later */}
         {variant === "registry" && (
-          <div className="relative lg:ml-[46px]" onMouseEnter={() => setShowReserved(true)} onMouseLeave={() => setShowReserved(false)}>
+          <div className="relative xl:ml-[46px]" onMouseEnter={() => setShowReserved(true)} onMouseLeave={() => setShowReserved(false)}>
             <button
               type="button"
               aria-describedby={item.reservedBy ? `${id}-reserved` : undefined}
@@ -118,19 +118,19 @@ export function ItemRow({ item, variant, onChange, onDelete }: { item: ListItem;
             type="button"
             onClick={() => onChange({ ...item, status: "reserved", reservedBy: { name: "You", date: new Date().toISOString() } })}
             disabled={item.status === "reserved"}
-            className="h-10 w-24 bg-terracotta font-display text-label font-medium text-cream hover:opacity-90 disabled:opacity-60 lg:ml-[45px]"
+            className="h-10 w-24 bg-terracotta font-display text-label font-medium text-cream hover:opacity-90 disabled:opacity-60 xl:ml-[45px]"
           >
             {item.status === "reserved" ? "Reserved" : "Reserve"}
           </button>
         )}
         {variant === "list" && (
-          <button type="button" className="w-[110px] text-center font-sans text-body hover:underline lg:ml-[22px]">
+          <button type="button" className="w-[110px] text-center font-sans text-body hover:underline xl:ml-[22px]">
             Save for later
           </button>
         )}
 
         {variant !== "shared" && (
-          <button type="button" onClick={onDelete} aria-label={`Delete ${item.name}`} className={cn("flex size-[30px] items-center justify-center text-ink hover:opacity-70", variant === "registry" ? "lg:ml-[67px]" : "lg:ml-[21px]")}>
+          <button type="button" onClick={onDelete} aria-label={`Delete ${item.name}`} className={cn("flex size-[30px] items-center justify-center text-ink hover:opacity-70", variant === "registry" ? "xl:ml-[67px]" : "xl:ml-[21px]")}>
             <IconDelete className="size-8" />
           </button>
         )}

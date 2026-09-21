@@ -54,7 +54,7 @@ export function ItemsBlock({ category, variant }: { category: ItemCategory; vari
         <h2 id={`${category.id}-h`} className="text-h2">
           {category.name}
         </h2>
-        <div className="mt-[6px] hidden h-[22px] font-sans text-eyebrow-xs font-semibold uppercase lg:flex">
+        <div className="mt-[6px] hidden h-[22px] font-sans text-eyebrow-xs font-semibold uppercase xl:flex">
           <span className="w-[330px]">Product</span>
           <span className={variant === "shared" ? "ml-auto flex pr-[74px]" : "ml-auto flex pr-[32px]"}>
             {HEADERS[variant].map((h, i) => (
@@ -69,7 +69,7 @@ export function ItemsBlock({ category, variant }: { category: ItemCategory; vari
             <ItemRow key={item.id} item={item} variant={variant} onChange={update} onDelete={() => remove(item.id)} />
           ))}
           {category.slots.map((slot) => (
-            <li key={slot.id} className="flex min-h-[150px] flex-col justify-between gap-4 border-[0.5px] border-sand p-5 lg:flex-row lg:items-start">
+            <li key={slot.id} className="flex min-h-[150px] flex-col justify-between gap-4 border-[0.5px] border-sand p-5 xl:flex-row xl:items-start">
               <div>
                 <p className="font-display text-[15px] font-medium leading-[22px]">{slot.tier === "recommended" ? "Recommended" : "Optional"}</p>
                 <p className="mt-0 font-display text-h3 font-medium">{slot.name}</p>
@@ -85,7 +85,7 @@ export function ItemsBlock({ category, variant }: { category: ItemCategory; vari
                   </Link>
                 </div>
               </div>
-              <div className="flex items-center gap-6 lg:mr-[63px] lg:mt-9">
+              <div className="flex items-center gap-6 xl:mr-[63px] xl:mt-9">
                 <div className="flex" role="group" aria-label="Quantity">
                   <span className="flex size-10 items-center justify-center border border-sand">
                     <span aria-hidden="true" className="block h-[2px] w-[13px] bg-ink" />
@@ -95,7 +95,7 @@ export function ItemsBlock({ category, variant }: { category: ItemCategory; vari
                     <IconPlus className="size-[14px]" />
                   </span>
                 </div>
-                <button type="button" className="w-[110px] font-sans text-body hover:underline lg:ml-[420px]">
+                <button type="button" className="w-[110px] font-sans text-body hover:underline xl:ml-[420px]">
                   Save for later
                 </button>
               </div>

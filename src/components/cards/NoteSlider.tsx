@@ -15,8 +15,12 @@ export function NoteSlider({ notes, className }: { notes: NoteSlide[]; className
       <Carousel label="Notes from Anita" className={className ? `relative ${className}` : "relative"} loop>
         <CarouselTrack>
           {notes.map((n, i) => (
-            <CarouselSlide key={n.id} aria-label={`${i + 1} of ${notes.length}`} className="flex h-[197px] w-full max-w-[660px]">
-              <div className="relative h-full w-[213px] shrink-0">
+            <CarouselSlide key={n.id} aria-label={`${i + 1} of ${notes.length}`} className="flex min-h-[197px] w-full max-w-[660px]">
+              {/* No h-full here: at narrow widths the 213px photo can't shrink, so the text column narrows
+                  instead and needs more height than the Figma-exact 197px to avoid overflowing the card -
+                  the row has min-height only, so it grows with the text, and the photo (no explicit height
+                  of its own) stretches to match via the flex row's default align-items:stretch. */}
+              <div className="relative w-[213px] shrink-0">
                 <Image src={n.image.src} alt={n.image.alt} fill sizes="213px" className="object-cover" />
               </div>
               <div className="ml-[19px] flex min-w-0 flex-1 flex-col pb-[23px] pt-9">
