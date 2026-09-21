@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
-import { noto } from "./fonts";
+import { noto, p22 } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-GB" className={noto.variable}>
+    <html lang="en-GB" className={`${noto.variable} ${p22.variable}`}>
       <body className="flex min-h-dvh flex-col">
         <a href="#main" className="skip-link">
           Skip to content
@@ -29,3 +29,4 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     </html>
   );
 }
+  
