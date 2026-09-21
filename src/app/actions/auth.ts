@@ -3,14 +3,15 @@
 import { redirect } from "next/navigation";
 import { passwordRules } from "@/lib/password-rules";
 
-export type AuthState = { status: "idle" | "error"; message?: string; fields?: Record<string, string> };
+export type AuthState = { status: "idle" | "error" | "success"; message?: string; fields?: Record<string, string> };
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /**
- * Auth stubs. Validate the shape the design implies, then send the visitor to the hub so the app flow can be
- * exercised end to end. TODO (Laravel phase): call the auth endpoints and set the session.
- * Whether Next.js owns auth at all is plan section 18 q7.
+ * Auth stubs. Validate the shape the design implies, then send the visitor onward so the app flow can be
+ * exercised end to end - login straight to the hub, register via a thank-you page first.
+ * TODO (Laravel phase): call the auth endpoints and set the session. Whether Next.js owns auth at all is plan
+ * section 18 q7.
  */
 export async function login(_prev: AuthState, formData: FormData): Promise<AuthState> {
   const email = String(formData.get("email") ?? "").trim();
@@ -33,7 +34,14 @@ export async function register(_prev: AuthState, formData: FormData): Promise<Au
   if (!passwordRules.every((r) => r.test(pw))) fields.password = "Your password does not meet the requirements.";
   if (formData.get("terms") !== "on") fields.terms = "Please accept the terms to continue.";
   if (Object.keys(fields).length) return { status: "error", fields };
-  redirect("/hub");
+  redirect("/thank-you");
+}
+
+/** No frame exists for this page (plan section 3) - validate the shape the login form implies, then acknowledge. TODO (Laravel phase): send the reset email. */
+export async function forgotPassword(_prev: AuthState, formData: FormData): Promise<AuthState> {
+  const email = String(formData.get("email") ?? "").trim();
+  if (!EMAIL.test(email)) return { status: "error", fields: { email: "Please enter a valid email address." } };
+  return { status: "success", message: `If an account exists for ${email}, we’ve sent a link to reset your password.` };
 }
 
 /** Bound per provider by OAuthButton; React still passes (prevState, formData), which are not needed here. */

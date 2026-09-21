@@ -87,9 +87,13 @@ export function RegisterForm() {
           </p>
         )}
       </div>
-      <Button type="submit" disabled={pending} className="mx-auto mt-[30px] flex w-[214px] px-0">
-        Create account
-      </Button>
+      {/* text-align centers the button's inline-flex box - see LoginForm for why mx-auto + a flex override
+          on Button itself doesn't reliably win against its own inline-flex base class. */}
+      <div className="mt-[30px] text-center">
+        <Button type="submit" disabled={pending} className="w-[214px] px-0">
+          Create account
+        </Button>
+      </div>
       <p className="mt-5 text-center font-sans text-meta">
         Already have an account?{" "}
         <Link href="/account/login" className="underline-offset-2 hover:underline">

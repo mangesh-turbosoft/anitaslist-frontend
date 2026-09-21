@@ -36,9 +36,14 @@ export function LoginForm() {
         Forgotten password?
       </Link>
       <Divider className="mt-[30px] border-t border-sand" />
-      <Button type="submit" disabled={pending} className="mx-auto mt-[30px] flex w-[214px] px-0">
-        Login
-      </Button>
+      {/* Button's own base class is inline-flex; overriding to flex here doesn't reliably beat it (cn is a
+          plain join, not a Tailwind-conflict-aware merge), which left mx-auto centering nothing. text-align on
+          the wrapper centers the inline-flex box directly instead. */}
+      <div className="mt-[30px] text-center">
+        <Button type="submit" disabled={pending} className="w-[214px] px-0">
+          Login
+        </Button>
+      </div>
       <p className="mt-[22px] text-center font-sans text-meta">
         Don’t have an account?{" "}
         <Link href="/account/register" className="underline-offset-2 hover:underline">

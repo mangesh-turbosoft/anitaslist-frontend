@@ -49,7 +49,7 @@ export type Note = {
 };
 
 export type HubData = {
-  user: { id: string; name: string; firstName: string; avatar: ImageAsset | null; weeksPregnant: number; weeksToDue: number };
+  user: { id: string; name: string; firstName: string; lastName: string; email: string; avatar: ImageAsset | null; weeksPregnant: number; weeksToDue: number };
   notes: NoteSlide[];
   lists: ListSummary[];
   registries: RegistrySummary[];

@@ -28,9 +28,12 @@ export function ContactForm() {
       <Input label="Name" name="name" showLabel autoComplete="name" placeholder="Name" required error={f.name} />
       <Input label="Email" name="email" type="email" showLabel autoComplete="email" placeholder="Email" required error={f.email} />
       <Textarea label="Comment" name="comment" showLabel placeholder="Comment" required error={f.comment} className="[&_textarea]:min-h-[160px]" />
-      <Button type="submit" disabled={pending} className="w-[129px] px-0">
-        Send
-      </Button>
+      {/* text-align centers the button's inline-flex box directly - see LoginForm for the same pattern and why. */}
+      <div className="text-center">
+        <Button type="submit" disabled={pending} className="w-[129px] px-0">
+          Send
+        </Button>
+      </div>
     </form>
   );
 }

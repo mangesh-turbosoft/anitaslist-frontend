@@ -22,7 +22,7 @@ export const registries: RegistrySummary[] = [
 ];
 
 export const hubData: HubData = {
-  user: { id: "user-1", name: "Anne Johnson", firstName: "Anne", avatar: null, weeksPregnant: 26, weeksToDue: 12 },
+  user: { id: "user-1", name: "Anne Johnson", firstName: "Anne", lastName: "Johnson", email: "anne.johnson@example.com", avatar: null, weeksPregnant: 26, weeksToDue: 12 },
   notes: [1, 2, 3, 4].map((n) => ({
     id: `hub-note-${n}`,
     image: { src: "/images/cover-a-213x197.webp", alt: "", width: 213, height: 197 },

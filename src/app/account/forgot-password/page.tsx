@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
-import { StubPage } from "@/components/app/StubPage";
+import { ForgotPasswordForm } from "@/components/forms/ForgotPasswordForm";
+import { AuthShell } from "@/components/layout/AuthShell";
 
 export const metadata: Metadata = { title: "Forgotten password", robots: { index: false } };
 
-/** Linked from the design; no frame exists for it (plan section 3). */
-export default function Page() {
-  return <StubPage title="Forgotten password" />;
+/** Reached from the login form's "Forgotten password?" link. No dedicated Figma frame - no split photo, content centred. */
+export default function ForgotPasswordPage() {
+  return (
+    <AuthShell showImage={false}>
+      <ForgotPasswordForm />
+    </AuthShell>
+  );
 }
