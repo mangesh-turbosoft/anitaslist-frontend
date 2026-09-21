@@ -61,11 +61,12 @@ export const homeContent: HomeContent = {
   categories: {
     eyebrow: "Lorem ipsum dolor products",
     items: [
-      { id: "cat-transport", name: "Transport", slug: "transport", image: { src: "/images/category-transport-476x585.webp", alt: "", width: 476, height: 585 } },
-      { id: "cat-nursery", name: "Nursery", slug: "nursery", image: { src: "/images/category-nursery-476x585.webp", alt: "", width: 476, height: 585 } },
-      { id: "cat-bedding", name: "Bedding", slug: "bedding", image: { src: "/images/category-bedding-476x585.webp", alt: "", width: 476, height: 585 } },
-      // Figma paginates "1 2 3 4" but draws three cards; fourth item is a placeholder so slide 4 exists.
-      { id: "cat-4", name: "Lorem ipsum", slug: "lorem-ipsum", image: { src: "/images/category-nursery-476x585.webp", alt: "", width: 476, height: 585 } },
+      { id: "cat-transport", name: "Transport", slug: "transport", image: { src: "/images/category-transport-476x585.webp", alt: "", width: 476, height: 585 }, subcategories: [] },
+      { id: "cat-nursery", name: "Nursery", slug: "nursery", image: { src: "/images/category-nursery-476x585.webp", alt: "", width: 476, height: 585 }, subcategories: [] },
+      { id: "cat-bedding", name: "Bedding", slug: "bedding", image: { src: "/images/category-bedding-476x585.webp", alt: "", width: 476, height: 585 }, subcategories: [] },
+      // Figma paginates "1 2 3 4" but draws three cards; fourth slot filled with a real category (from the
+      // full 12-category catalog built for Browse all products) instead of a fake slug, so the link resolves.
+      { id: "cat-travel", name: "Travel", slug: "travel", image: { src: "/images/category-generic-3-476x585.webp", alt: "", width: 476, height: 585 }, subcategories: [] },
     ],
   },
 

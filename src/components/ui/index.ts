@@ -3,6 +3,7 @@ export { Checkbox } from "./Checkbox";
 export { Container } from "./Container";
 export { Divider } from "./Divider";
 export { Eyebrow } from "./Eyebrow";
+export { FilterSelect } from "./FilterSelect";
 export { IconTile } from "./IconTile";
 export { Input } from "./Input";
 export { MenuDots } from "./MenuDots";

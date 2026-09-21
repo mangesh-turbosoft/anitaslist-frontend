@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import { StubPage } from "@/components/app/StubPage";
+import { BrowseProductsPage } from "@/components/products/BrowseProductsPage";
+import { getBrowseProductsContent } from "@/lib/api/content";
 
-export const metadata: Metadata = { title: "Products", robots: { index: false } };
+export const metadata: Metadata = { title: "Products" };
 
-/** Linked from the design; no frame exists for it (plan section 3). */
-export default function Page() {
-  return <StubPage title="Products" />;
+/** Figma 183:5020 "Browse all products (desktop)". */
+export default async function Page() {
+  const content = await getBrowseProductsContent();
+  return <BrowseProductsPage content={content} />;
 }

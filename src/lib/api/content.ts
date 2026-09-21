@@ -1,9 +1,23 @@
 import { aboutContent } from "@/data/about";
+import { browseProductsContent } from "@/data/browse-products";
+import { categories } from "@/data/categories";
+import { categoryPageContent } from "@/data/category-page";
 import { homeContent } from "@/data/home";
+import { productDetail } from "@/data/product-detail";
 import { sampleListDetail } from "@/data/sample-list-detail";
 import { sampleListsContent } from "@/data/sample-lists";
 import { userLists } from "@/data/user";
-import type { AboutContent, HomeContent, SampleListDetail, SampleListsContent, UserList } from "@/types/content";
+import type {
+  AboutContent,
+  BrowseProductsContent,
+  Category,
+  CategoryPageContent,
+  HomeContent,
+  ProductDetail,
+  SampleListDetail,
+  SampleListsContent,
+  UserList,
+} from "@/types/content";
 
 /**
  * Content access layer. Every function is async from day one so that swapping the fixture for a
@@ -27,4 +41,20 @@ export async function getSampleListDetail(slug: string): Promise<SampleListDetai
 
 export async function getUserLists(): Promise<UserList[]> {
   return userLists;
+}
+
+export async function getCategories(): Promise<Category[]> {
+  return categories;
+}
+
+export async function getBrowseProductsContent(): Promise<BrowseProductsContent> {
+  return browseProductsContent;
+}
+
+export async function getCategoryPageContent(categorySlug: string, subcategorySlug?: string, page?: number): Promise<CategoryPageContent> {
+  return categoryPageContent(categorySlug, subcategorySlug, page);
+}
+
+export async function getProductDetail(categorySlug: string, subcategorySlug: string, productSlug: string): Promise<ProductDetail> {
+  return productDetail(categorySlug, subcategorySlug, productSlug);
 }

@@ -44,11 +44,15 @@ export type Testimonial = {
   avatar: ImageAsset | null;
 };
 
+export type Subcategory = { slug: string; name: string };
+
 export type Category = {
   id: string;
   name: string;
   slug: string;
   image: ImageAsset;
+  /** Only populated where Figma draws it (Transport, Browse all products' sidebar); others have none yet. */
+  subcategories: Subcategory[];
 };
 
 export type BrandPartner = {
@@ -145,11 +149,59 @@ export type UserList = { id: string; name: string };
 
 export type SampleListDetail = {
   slug: string;
-  breadcrumb: { parent: Link; current: string };
+  breadcrumb: { trail: Link[]; current: string };
   /** rich */
   title: string;
   notes: NoteSlide[];
   banner: ImageAsset;
   subheading: string;
   rows: ProductsRow[];
+};
+
+/* ---------- Products browse / category / detail (Figma 183:5020, 190:5514, 196:5949) ---------- */
+
+export type BrowseProductsContent = {
+  eyebrow: string;
+  /** rich */
+  heading: string;
+  searchPlaceholder: string;
+  /** The "PRODUCT" / "COLLECTION" lorem-ipsum summary block above the grid - CONTENT TODO. */
+  filterSummary: { productLines: string[]; collectionLines: string[] };
+  categories: Category[];
+};
+
+/** Grid card on the category page - simpler than the full sample-list ProductCard (no rating/brand/add-to-list panel). */
+export type CategoryProduct = { id: string; slug: string; name: string; price: string; image: ImageAsset | null };
+
+export type CategoryPageContent = {
+  trail: Link[];
+  current: string;
+  /** rich */
+  heading: string;
+  /** Reuses NoteSlider; the single drawn quote is repeated so its dots have something to page through. */
+  notes: NoteSlide[];
+  description: string;
+  categories: Category[];
+  activeCategorySlug: string;
+  activeSubcategorySlug: string | null;
+  products: CategoryProduct[];
+  page: number;
+  totalPages: number;
+};
+
+export type BuyingOption = { id: string; retailer: string; href: string };
+export type ProductSpecific = { id: string; label: string; detail: string };
+
+export type ProductDetail = {
+  slug: string;
+  categorySlug: string;
+  subcategorySlug: string;
+  trail: Link[];
+  name: string;
+  price: string;
+  /** Figma draws plain placeholder boxes, no real photography yet - null renders the "Product image" placeholder. */
+  gallery: (ImageAsset | null)[];
+  buyingOptions: BuyingOption[];
+  description: string;
+  specifics: ProductSpecific[];
 };

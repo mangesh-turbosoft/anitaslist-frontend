@@ -2,7 +2,7 @@
 
 import { useState, type ComponentType, type SVGProps } from "react";
 import { IconChevronDown, IconDelete, IconNounDone, IconNounMessage, IconNounSave, IconNounShare, IconPencil } from "@/components/icons";
-import { Container, Select } from "@/components/ui";
+import { Container, FilterSelect } from "@/components/ui";
 import { cn } from "@/lib/cn";
 import { formatGBP } from "@/lib/format";
 
@@ -96,21 +96,5 @@ export function FixedBar({
         </div>
       )}
     </div>
-  );
-}
-
-function FilterSelect({ label, options }: { label: string; options: string[] }) {
-  // Figma draws the trigger text as a static "Filter: Category" regardless of what's picked - kept as-is via
-  // renderValue rather than switching to a value-reflecting display, to match the original behaviour exactly.
-  return (
-    <Select
-      label={`Filter: ${label}`}
-      options={options.map((o) => ({ value: o, label: o }))}
-      defaultValue={options[0]}
-      renderValue={() => `Filter: ${label}`}
-      className="w-[218px]"
-      fieldClassName="h-10 w-full border border-r-0 border-sand pl-[10px] font-display text-label font-medium"
-      chevronClassName="h-10 w-[39px] border border-sand text-ink"
-    />
   );
 }

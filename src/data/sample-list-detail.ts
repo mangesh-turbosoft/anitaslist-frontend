@@ -19,7 +19,7 @@ const product = (id: string): Product => ({
 export function sampleListDetail(slug: string): SampleListDetail {
   return {
     slug,
-    breadcrumb: { parent: { label: "Sample lists", href: "/sample-lists" }, current: "Sample sub link" },
+    breadcrumb: { trail: [{ label: "Sample lists", href: "/sample-lists" }], current: "Sample sub link" },
     title: "Bibendum odio sit amet aliquam sit.",
     notes: [1, 2, 3, 4].map((n) => ({
       id: `note-${n}`,
