@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { Image } from "@/components/ui/Image";
 import { useId, useState } from "react";
 import { IconPlus, IconStar } from "@/components/icons";
 import { useListSelection } from "@/components/lists/ListSelection";

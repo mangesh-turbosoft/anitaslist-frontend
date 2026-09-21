@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { Image } from "@/components/ui/Image";
 import { useId, useState, type ReactNode } from "react";
 import { IconNounUpload, IconTick } from "@/components/icons";
 import { Divider, Eyebrow, StepDots } from "@/components/ui";

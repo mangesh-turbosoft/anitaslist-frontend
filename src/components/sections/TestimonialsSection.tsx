@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Image } from "@/components/ui/Image";
 import { Carousel, CarouselArrows, CarouselDots, CarouselSlide, CarouselTrack } from "@/components/carousel/Carousel";
 import { Container, Divider, Eyebrow, RichText } from "@/components/ui";
 import type { HomeContent } from "@/types/content";

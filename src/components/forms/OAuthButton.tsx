@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { Image } from "@/components/ui/Image";
 import { useActionState } from "react";
 import { socialSignIn, type AuthState } from "@/app/actions/auth";
 

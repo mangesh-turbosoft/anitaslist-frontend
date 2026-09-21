@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Image } from "@/components/ui/Image";
 import { Container, Divider, Eyebrow } from "@/components/ui";
 import type { HomeContent } from "@/types/content";
 

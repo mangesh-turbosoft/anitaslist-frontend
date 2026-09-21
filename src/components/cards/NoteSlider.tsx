@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Image } from "@/components/ui/Image";
 import Link from "next/link";
 import { Carousel, CarouselDots, CarouselSlide, CarouselTrack } from "@/components/carousel/Carousel";
 import { IconPlay } from "@/components/icons";

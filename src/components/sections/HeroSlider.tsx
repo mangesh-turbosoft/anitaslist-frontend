@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Image } from "@/components/ui/Image";
 import { Carousel, CarouselDots, CarouselSlide, CarouselTrack } from "@/components/carousel/Carousel";
 import { Button, Container, Rating, RichText } from "@/components/ui";
 import { cn } from "@/lib/cn";

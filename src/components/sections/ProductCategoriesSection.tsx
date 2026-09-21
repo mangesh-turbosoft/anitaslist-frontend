@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Image } from "@/components/ui/Image";
 import Link from "next/link";
 import { Carousel, CarouselArrows, CarouselNumbers, CarouselSlide, CarouselTrack } from "@/components/carousel/Carousel";
 import { IconChevronRight } from "@/components/icons";

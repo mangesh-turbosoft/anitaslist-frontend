@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Image } from "@/components/ui/Image";
 import { Button, RichText } from "@/components/ui";
 import type { SampleListCard as SampleListCardData } from "@/types/content";
 

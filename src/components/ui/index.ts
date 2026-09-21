@@ -5,6 +5,7 @@ export { Divider } from "./Divider";
 export { Eyebrow } from "./Eyebrow";
 export { FilterSelect } from "./FilterSelect";
 export { IconTile } from "./IconTile";
+export { Image } from "./Image";
 export { Input } from "./Input";
 export { MenuDots } from "./MenuDots";
 export { Modal } from "./Modal";
