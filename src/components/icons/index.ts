@@ -1,4 +1,3 @@
-export { IconAiTool } from "./IconAiTool";
 export { IconArrow } from "./IconArrow";
 export { IconArrowForm } from "./IconArrowForm";
 export { IconArrowFormSm } from "./IconArrowFormSm";
@@ -15,6 +14,7 @@ export { IconInstagram } from "./IconInstagram";
 export { IconLogo } from "./IconLogo";
 export { IconLogoMark } from "./IconLogoMark";
 export { IconMenu } from "./IconMenu";
+export { IconMyHub } from "./IconMyHub";
 export { IconNounBulletlist } from "./IconNounBulletlist";
 export { IconNounDone } from "./IconNounDone";
 export { IconNounEye } from "./IconNounEye";

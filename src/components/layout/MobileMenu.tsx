@@ -77,9 +77,6 @@ export function MobileMenu() {
             />
           </nav>
           <div className="mt-auto flex flex-col gap-4 pb-8">
-            <Link href={accountNav.search.href} onClick={close} className="font-display text-label font-medium">
-              {accountNav.search.label}
-            </Link>
             <Link href={accountNav.login.href} onClick={close} className="font-display text-label font-medium">
               {accountNav.login.label}
             </Link>
