@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { IconFacebook, IconInstagram, IconYoutube } from "@/components/icons";
 import { SubscribeForm } from "@/components/forms/SubscribeForm";
-import { Button, Container, Eyebrow } from "@/components/ui";
+import { FeedbackButton } from "@/components/layout/FeedbackButton";
+import { Container, Eyebrow } from "@/components/ui";
 import { copyright, footerQuickLinks, social } from "@/data/site";
 
 const socialLinks = [
@@ -73,9 +74,7 @@ export function Footer() {
             <p className="mt-[17px] font-sans text-body text-ink">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore.
             </p>
-            <Button href="/feedback" className="mt-[26px] w-[194px] px-0">
-              Share your feedback
-            </Button>
+            <FeedbackButton />
           </div>
         </div>
 

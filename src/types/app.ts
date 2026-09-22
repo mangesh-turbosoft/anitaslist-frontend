@@ -60,7 +60,19 @@ export type HubData = {
 /* ---------- List / registry detail ---------- */
 
 export type ItemTier = "optional" | "recommended" | null;
-export type ItemStatus = "to-buy" | "bought" | "reserved";
+export type ItemStatus = "to-buy" | "bought" | "reserved" | "deleted";
+
+export type BuyingOption = { id: string; retailer: string; href: string };
+
+/** Recorded when a registry invitee logs a purchase via the "buy" lightbox (Figma 1199:4492). */
+export type PurchaseDetails = {
+  retailer: string;
+  totalPence: number;
+  quantityBought: number;
+  buyerName: string;
+  message: string;
+  thankedYou: boolean;
+};
 
 export type ListItem = {
   id: string;
@@ -73,6 +85,8 @@ export type ListItem = {
   status: ItemStatus;
   image: ImageAsset | null;
   reservedBy: { name: string; date: string } | null;
+  buyingOptions: BuyingOption[];
+  purchase: PurchaseDetails | null;
 };
 
 /** Journey lists start as category "slots" with suggestions rather than items (917:5720 / Group 86). */

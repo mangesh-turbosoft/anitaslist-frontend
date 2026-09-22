@@ -14,7 +14,7 @@ export function ProfileElement({ name, avatar }: { name: string; avatar: ImageAs
       </span>
       <div className="pt-[18px]">
         <p className="text-h2">{name}</p>
-        <Link href="/account/profile" className="font-sans text-body hover:underline">
+        <Link href="?panel=profile-settings" className="font-sans text-body hover:underline">
           Edit profile
         </Link>
       </div>

@@ -10,6 +10,9 @@ const notes: NoteSlide[] = [1, 2, 3, 4].map((n) => ({
 
 const banner = { src: "/images/banner-section-1440x300.webp", alt: "", width: 1440, height: 300 };
 
+/** The 3 retailer rows drawn in the "Buying options" step of the buy lightbox (Figma 1199:3679). */
+const buyingOptions: ListItem["buyingOptions"] = [1, 2, 3].map((n) => ({ id: `option-${n}`, retailer: "Lorem ipsum dolor", href: "#" }));
+
 /** Row copy as drawn (916:4388 / 1011:10660). Tier prefix alternates Optional / Recommended in the registry frames. */
 const item = (id: string, tier: ListItem["tier"], status: ListItem["status"] = "to-buy"): ListItem => ({
   id,
@@ -22,12 +25,28 @@ const item = (id: string, tier: ListItem["tier"], status: ListItem["status"] = "
   status,
   image: null,
   reservedBy: status === "reserved" ? { name: "Jane Black", date: "2026-01-01" } : null,
+  buyingOptions,
+  purchase:
+    status === "bought"
+      ? {
+          retailer: "Lorem ipsum dolor",
+          totalPence: 0,
+          quantityBought: 1,
+          buyerName: "Jane Blogs",
+          message:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut alix et al commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla.\n\nJane xxx",
+          thankedYou: false,
+        }
+      : null,
 });
 
 const category = (id: string, withTier: boolean, rows = 4): ItemCategory => ({
   id,
   name: "Product category",
-  items: Array.from({ length: rows }, (_, i) => item(`${id}-item-${i + 1}`, withTier ? (i < 2 ? "optional" : "recommended") : null, withTier && i === 0 ? "reserved" : "to-buy")),
+  items: Array.from({ length: rows }, (_, i) => {
+    const status: ListItem["status"] = withTier && i === 0 ? "reserved" : withTier && i === 1 ? "bought" : "to-buy";
+    return item(`${id}-item-${i + 1}`, withTier ? (i < 2 ? "optional" : "recommended") : null, status);
+  }),
   slots: [],
 });
 

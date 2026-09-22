@@ -25,7 +25,22 @@ const STATUS: { value: ItemStatus; label: string }[] = [
  * 96x40 at 1155 with a "Reserved by" popover; shared view shows a "Reserve" button at 1210 instead;
  * list shows "Save for later" Noto 15/22 at 1187. Delete 30x30 at 1318.
  */
-export function ItemRow({ item, variant, onChange, onDelete }: { item: ListItem; variant: RowVariant; onChange: (next: ListItem) => void; onDelete: () => void }) {
+export function ItemRow({
+  item,
+  variant,
+  onChange,
+  onDelete,
+  onBuyClick,
+  onReserveClick,
+}: {
+  item: ListItem;
+  variant: RowVariant;
+  onChange: (next: ListItem) => void;
+  onDelete: () => void;
+  /** Shared (invitee) view only - opens the buy/reserve lightbox instead of flipping status inline. */
+  onBuyClick?: () => void;
+  onReserveClick?: () => void;
+}) {
   const [showReserved, setShowReserved] = useState(false);
   const id = useId();
   const tierLabel = item.tier === "optional" ? "Optional" : item.tier === "recommended" ? "Recommended" : null;
@@ -84,7 +99,11 @@ export function ItemRow({ item, variant, onChange, onDelete }: { item: ListItem;
         />
 
         {/* Purchase */}
-        <button type="button" onClick={() => onChange({ ...item, status: "bought" })} className="h-10 w-24 bg-terracotta font-display text-label font-medium text-cream hover:opacity-90 xl:ml-[30px]">
+        <button
+          type="button"
+          onClick={variant === "shared" ? onBuyClick : () => onChange({ ...item, status: "bought" })}
+          className="h-10 w-24 bg-terracotta font-display text-label font-medium text-cream hover:opacity-90 xl:ml-[30px]"
+        >
           Buy
         </button>
 
@@ -116,7 +135,7 @@ export function ItemRow({ item, variant, onChange, onDelete }: { item: ListItem;
         {variant === "shared" && (
           <button
             type="button"
-            onClick={() => onChange({ ...item, status: "reserved", reservedBy: { name: "You", date: new Date().toISOString() } })}
+            onClick={onReserveClick}
             disabled={item.status === "reserved"}
             className="h-10 w-24 bg-terracotta font-display text-label font-medium text-cream hover:opacity-90 disabled:opacity-60 xl:ml-[45px]"
           >

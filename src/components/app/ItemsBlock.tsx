@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { ItemRow, type RowVariant } from "@/components/app/ItemRow";
 import { IconPlus } from "@/components/icons";
+import { BuyProductModal } from "@/components/modals/BuyProductModal";
+import { ReserveItemModal } from "@/components/modals/ReserveItemModal";
 import { Container } from "@/components/ui";
 import type { ItemCategory, ListItem } from "@/types/app";
 
@@ -41,11 +43,28 @@ const HEADERS: Record<RowVariant, { label: string; w: number; ml: number }[]> = 
  * Journey lists start as slots (Group 86): "Recommended" P22 500 15/22, subcategory P22 500 24/34 and three 174x40
  * buttons - Browse products · Get expert advise (sic) · View sample lists - plus quantity and "Save for later".
  */
-export function ItemsBlock({ category, variant }: { category: ItemCategory; variant: RowVariant }) {
-  const [items, setItems] = useState(category.items);
-  const update = (next: ListItem) => setItems((all) => all.map((i) => (i.id === next.id ? next : i)));
+export function ItemsBlock({
+  category,
+  variant,
+  onUpdateItem,
+  onRemoveItem,
+}: {
+  category: ItemCategory;
+  variant: RowVariant;
+  /** Item state is lifted to DetailItemsSection so the cross-cutting panels (bought items, add own item,
+   * review deleted items) can see and mutate it across every category, not just this block's own. */
+  onUpdateItem: (next: ListItem) => void;
+  onRemoveItem: (id: string) => void;
+}) {
+  const items = category.items.filter((i) => i.status !== "deleted");
+  const [pending, setPending] = useState<{ item: ListItem; action: "reserve" | "buy" } | null>(null);
+  const update = onUpdateItem;
   const remove = (id: string) => {
-    if (window.confirm("Delete this item?")) setItems((all) => all.filter((i) => i.id !== id));
+    if (window.confirm("Delete this item?")) onRemoveItem(id);
+  };
+  const save = (next: ListItem) => {
+    update(next);
+    setPending(null);
   };
 
   return (
@@ -66,7 +85,15 @@ export function ItemsBlock({ category, variant }: { category: ItemCategory; vari
         </div>
         <ul className="mt-[8px] flex flex-col gap-[10px]">
           {items.map((item) => (
-            <ItemRow key={item.id} item={item} variant={variant} onChange={update} onDelete={() => remove(item.id)} />
+            <ItemRow
+              key={item.id}
+              item={item}
+              variant={variant}
+              onChange={update}
+              onDelete={() => remove(item.id)}
+              onBuyClick={() => setPending({ item, action: "buy" })}
+              onReserveClick={() => setPending({ item, action: "reserve" })}
+            />
           ))}
           {category.slots.map((slot) => (
             <li key={slot.id} className="flex min-h-[150px] flex-col justify-between gap-4 border-[0.5px] border-sand p-5 xl:flex-row xl:items-start">
@@ -103,6 +130,15 @@ export function ItemsBlock({ category, variant }: { category: ItemCategory; vari
           ))}
         </ul>
       </Container>
+
+      <ReserveItemModal
+        open={pending?.action === "reserve"}
+        onClose={() => setPending(null)}
+        item={pending?.action === "reserve" ? pending.item : null}
+        categoryName={category.name}
+        onSave={save}
+      />
+      <BuyProductModal open={pending?.action === "buy"} onClose={() => setPending(null)} item={pending?.action === "buy" ? pending.item : null} onSave={save} />
     </section>
   );
 }

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { DetailHero } from "@/components/app/AppHero";
+import { DetailItemsSection } from "@/components/app/DetailItemsSection";
 import { FixedBarClient } from "@/components/app/FixedBarClient";
-import { ItemsBlock } from "@/components/app/ItemsBlock";
 import type { RowVariant } from "@/components/app/ItemRow";
 import { NoteSlider } from "@/components/cards/NoteSlider";
 import { IconPencilEdit } from "@/components/icons";
@@ -78,11 +78,7 @@ export function DetailPage({ detail, variant, eyebrow, back, shareLink, sharePas
           </Button>
         </Container>
       ) : (
-        <div className="flex flex-col gap-[30px] pb-[50px] pt-10">
-          {detail.categories.map((c) => (
-            <ItemsBlock key={c.id} category={c} variant={variant} />
-          ))}
-        </div>
+        <DetailItemsSection categories={detail.categories} variant={variant} />
       )}
       <ModalRouter shareLink={shareLink} sharePasscode={sharePasscode} />
       {variant === "shared" && (
