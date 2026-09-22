@@ -22,8 +22,8 @@
   --color-white: #ffffff;
   --color-black: #000000;
 
-  /* Font families — --font-p22 comes from next/font/local (see src/fonts/README.md) */
-  --font-display: var(--font-p22, "P22 Mackinac Pro"), Georgia, "Times New Roman", serif;
+  /* Font families — "p22-mackinac-pro" is loaded via Adobe Fonts (see the <link> in layout.tsx and src/fonts/README.md) */
+  --font-display: "p22-mackinac-pro", Georgia, "Times New Roman", serif;
   --font-sans: var(--font-noto), "Noto Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
 
   /* Type scale — size / line-height pairs exactly as measured. Letter-spacing is 0 everywhere. */
