@@ -1,20 +1,25 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { CategoryProductCard } from "@/components/cards/CategoryProductCard";
 import { CategoryTile } from "@/components/cards/CategoryTile";
-import { IconSearch } from "@/components/icons";
+import { IconChevronRight, IconSearch } from "@/components/icons";
 import { Container, Eyebrow } from "@/components/ui";
-import { getCategories } from "@/lib/api/content";
+import { getCategories, getSearchResults } from "@/lib/api/content";
 
 export const metadata: Metadata = { title: "Search", robots: { index: false } };
 
 type Props = { searchParams: Promise<{ q?: string }> };
 
 /**
- * Header "Search" destination. No search UI or results state is designed in Figma, and there's no search
- * index to query yet - rather than a bare "results will appear here" stub, this gives the page real content
- * (browse-by-category) so it's useful today and only the results list itself is a placeholder.
+ * Header "Search" destination. No search UI is designed in Figma, and there's no live search index yet -
+ * rather than faking full-catalogue results, this matches `q` against the real fixture data we do have
+ * (category/subcategory names, the one real product) and shows those as genuine results, with an honest
+ * empty state otherwise. "Browse by category" below is unfiltered and always shown as a fallback.
  */
 export default async function SearchPage({ searchParams }: Props) {
-  const [{ q = "" }, categories] = await Promise.all([searchParams, getCategories()]);
+  const { q = "" } = await searchParams;
+  const [categories, results] = await Promise.all([getCategories(), getSearchResults(q)]);
+  const hasResults = results.categories.length > 0 || results.subcategories.length > 0 || results.products.length > 0;
 
   return (
     <>
@@ -43,11 +48,49 @@ export default async function SearchPage({ searchParams }: Props) {
         </form>
       </Container>
 
-      {q && (
+      {q && !hasResults && (
         <Container className="mt-8">
-          <p className="font-sans text-body text-ink">
-            We couldn’t find a live match for “{q}” yet - search is still being connected. Try one of the categories below instead.
-          </p>
+          <p className="font-sans text-body text-ink">No results for “{q}”. Try one of the categories below instead.</p>
+        </Container>
+      )}
+
+      {q && hasResults && (
+        <Container className="mt-8">
+          {results.categories.length > 0 && (
+            <ul className="grid grid-cols-1 gap-x-5 gap-y-8 sm:grid-cols-2 xl:grid-cols-4">
+              {results.categories.map((category) => (
+                <li key={category.id}>
+                  <CategoryTile category={category} />
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {results.subcategories.length > 0 && (
+            <ul className={results.categories.length > 0 ? "mt-8 flex flex-col gap-1" : "flex flex-col gap-1"}>
+              {results.subcategories.map(({ category, subcategory }) => (
+                <li key={subcategory.slug}>
+                  <Link
+                    href={`/products/${category.slug}/${subcategory.slug}`}
+                    className="group flex h-[70px] items-center justify-between border-b-[0.5px] border-sand font-display text-h3 font-medium text-ink"
+                  >
+                    {subcategory.name}
+                    <IconChevronRight className="h-4 w-auto text-terracotta transition-transform group-hover:translate-x-1" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {results.products.length > 0 && (
+            <ul className={`grid grid-cols-1 gap-x-5 gap-y-8 sm:grid-cols-2 xl:grid-cols-4 ${results.categories.length > 0 || results.subcategories.length > 0 ? "mt-8" : ""}`}>
+              {results.products.map((product) => (
+                <li key={product.href}>
+                  <CategoryProductCard product={{ id: product.href, slug: product.href, name: product.name, price: product.price, image: null }} href={product.href} />
+                </li>
+              ))}
+            </ul>
+          )}
         </Container>
       )}
 

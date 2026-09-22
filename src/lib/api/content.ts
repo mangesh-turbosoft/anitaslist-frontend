@@ -6,6 +6,7 @@ import { homeContent } from "@/data/home";
 import { productDetail } from "@/data/product-detail";
 import { sampleListDetail } from "@/data/sample-list-detail";
 import { sampleListsContent } from "@/data/sample-lists";
+import { searchContent } from "@/data/search";
 import { userLists } from "@/data/user";
 import type {
   AboutContent,
@@ -16,6 +17,7 @@ import type {
   ProductDetail,
   SampleListDetail,
   SampleListsContent,
+  SearchResults,
   UserList,
 } from "@/types/content";
 
@@ -57,4 +59,8 @@ export async function getCategoryPageContent(categorySlug: string, subcategorySl
 
 export async function getProductDetail(categorySlug: string, subcategorySlug: string, productSlug: string): Promise<ProductDetail> {
   return productDetail(categorySlug, subcategorySlug, productSlug);
+}
+
+export async function getSearchResults(query: string): Promise<SearchResults> {
+  return searchContent(query);
 }

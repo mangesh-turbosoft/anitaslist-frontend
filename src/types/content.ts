@@ -205,3 +205,19 @@ export type ProductDetail = {
   description: string;
   specifics: ProductSpecific[];
 };
+
+/** A subcategory match, kept with its parent category so the link and label have context. */
+export type SubcategoryMatch = { category: Category; subcategory: Subcategory };
+
+export type ProductMatch = { name: string; price: string; href: string };
+
+/**
+ * What `q` actually matches in the real fixture data we have (category/subcategory names, the one real
+ * product) - there's no live search index yet, so this is honest about being a small, real result set
+ * rather than faking a full catalogue (plan section 13).
+ */
+export type SearchResults = {
+  categories: Category[];
+  subcategories: SubcategoryMatch[];
+  products: ProductMatch[];
+};
