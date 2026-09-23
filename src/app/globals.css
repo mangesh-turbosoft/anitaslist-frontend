@@ -145,4 +145,19 @@
   .animate-delay-1 { animation-delay: 0.1s; }
   .animate-delay-2 { animation-delay: 0.25s; }
   .animate-delay-3 { animation-delay: 0.4s; }
+
+  /* Trusted-partners marquee (>4 logos) - the track is the item list rendered twice back to back, so
+     translating it exactly -50% loops seamlessly into its own duplicate. Also respects the
+     prefers-reduced-motion block above (zeroes animation-duration, so it just sits still instead). */
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  .animate-marquee {
+    animation: marquee linear infinite;
+  }
+  .animate-marquee:hover,
+  .animate-marquee:focus-within {
+    animation-play-state: paused;
+  }
 }
