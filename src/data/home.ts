@@ -72,11 +72,24 @@ export const homeContent: HomeContent = {
 
   partners: {
     eyebrow: "Our trusted partners",
+    // The 4 with a real logo file are Figma's own drawn set; the rest are real vendors sold on
+    // anitaslist.com (collections/brands) added on request, without a downloadable logo file for each yet -
+    // BrandPartnersSection falls back to a text logotype for those, coloured to match each brand's real
+    // wordmark (Maxi-Cosi red, Medela/Philips blue, Tommee Tippee teal; the rest are genuinely black)
+    // until real logo assets are provided.
     items: [
       { id: "brand-babybjorn", name: "BabyBjörn", logo: { src: "/images/brand-babybjorn-alt-158x31.webp", alt: "BabyBjörn", width: 158, height: 31 }, href: null },
       { id: "brand-babyzen", name: "Babyzen", logo: { src: "/images/brand-babyzen-alt-158x43.webp", alt: "Babyzen", width: 158, height: 43 }, href: null },
       { id: "brand-lovevery", name: "Lovevery", logo: { src: "/images/brand-lovevery-alt-208x49.webp", alt: "Lovevery", width: 208, height: 49 }, href: null },
       { id: "brand-stokke", name: "Stokke", logo: { src: "/images/brand-stokke-alt-163x42.webp", alt: "Stokke", width: 163, height: 42 }, href: null },
+      { id: "brand-bugaboo", name: "Bugaboo", href: null },
+      { id: "brand-cybex", name: "Cybex", href: null },
+      { id: "brand-maxicosi", name: "Maxi-Cosi", color: "#E2001A", href: null },
+      { id: "brand-uppababy", name: "UPPAbaby", href: null },
+      { id: "brand-joolz", name: "Joolz", href: null },
+      { id: "brand-medela", name: "Medela", color: "#0060A9", href: null },
+      { id: "brand-tommeetippee", name: "Tommee Tippee", color: "#00A19A", href: null },
+      { id: "brand-philipsavent", name: "Philips Avent", color: "#0068B5", href: null },
     ],
   },
 };

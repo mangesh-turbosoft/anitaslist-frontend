@@ -8,13 +8,23 @@ const MAX_STATIC = 4;
 const SECONDS_PER_LOGO = 4;
 
 function BrandLogo({ brand }: { brand: HomeContent["partners"]["items"][number] }) {
-  const img = <Image src={brand.logo.src} alt={brand.name} width={brand.logo.width} height={brand.logo.height} className="h-auto" style={{ width: brand.logo.width }} />;
+  const mark = brand.logo ? (
+    <Image src={brand.logo.src} alt={brand.name} width={brand.logo.width} height={brand.logo.height} className="h-auto" style={{ width: brand.logo.width }} />
+  ) : (
+    // No downloadable logo file for this vendor yet - a plain logotype reads as "part of the row" without
+    // inventing a mark that isn't theirs. `leading-none` keeps the line box close to the glyphs' own height
+    // (all-caps, no descenders) so it optically centres against the image logos instead of sitting high in
+    // a taller default line-height.
+    <span className="block whitespace-nowrap font-display text-h3 font-bold uppercase leading-none tracking-wide text-ink" style={brand.color ? { color: brand.color } : undefined}>
+      {brand.name}
+    </span>
+  );
   return brand.href ? (
     <a href={brand.href} target="_blank" rel="noopener noreferrer" className="transition-opacity hover:opacity-80">
-      {img}
+      {mark}
     </a>
   ) : (
-    img
+    mark
   );
 }
 
@@ -53,7 +63,10 @@ export function BrandPartnersSection({ eyebrow, items }: HomeContent["partners"]
         <div className="flex items-center pt-6 xl:w-[446px] xl:border-r-[0.5px] xl:border-sand xl:pt-0">
           <Eyebrow>{eyebrow}</Eyebrow>
         </div>
-        <div className="min-w-0 overflow-hidden py-8 xl:ml-[54px] xl:flex-1 xl:py-0" style={{ maskImage: "linear-gradient(to right, transparent, black 24px, black calc(100% - 24px), transparent)" }}>
+        <div
+          className="flex min-w-0 items-center overflow-hidden py-8 xl:ml-[54px] xl:flex-1 xl:py-0"
+          style={{ maskImage: "linear-gradient(to right, transparent, black 24px, black calc(100% - 24px), transparent)" }}
+        >
           <div className="flex w-max animate-marquee items-center gap-x-12" style={{ animationDuration: `${items.length * SECONDS_PER_LOGO}s` }}>
             {[...items, ...items].map((brand, i) => (
               <div key={`${brand.id}-${i}`} className="flex shrink-0 items-center">

@@ -58,7 +58,12 @@ export type Category = {
 export type BrandPartner = {
   id: string;
   name: string;
-  logo: ImageAsset;
+  /** Real vendors added from the live site's brand list (anitaslist.com/collections/brands) have no clean
+   * downloadable logo file, so `logo` is optional - BrandPartnersSection falls back to a text logotype. */
+  logo?: ImageAsset;
+  /** Text-logotype colour, for brands whose real wordmark isn't plain black (e.g. Maxi-Cosi red). Ignored
+   * when `logo` is set - the real logo file already carries its own colour. */
+  color?: string;
   href: string | null;
 };
 
