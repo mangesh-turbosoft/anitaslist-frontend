@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { IconFacebook, IconInstagram, IconYoutube } from "@/components/icons";
 import { SubscribeForm } from "@/components/forms/SubscribeForm";
 import { FeedbackButton } from "@/components/layout/FeedbackButton";
+import { FooterQuickLinks } from "@/components/layout/FooterQuickLinks";
 import { Container, Eyebrow } from "@/components/ui";
 import { copyright, footerQuickLinks, social } from "@/data/site";
 
@@ -56,15 +56,7 @@ export function Footer() {
           {/* Quick links */}
           <nav aria-label="Quick links" className="xl:ml-[137px] xl:w-[193px]">
             <Eyebrow>Quick links</Eyebrow>
-            <ul className="-mt-[7px]">
-              {footerQuickLinks.map((item) => (
-                <li key={item.href}>
-                  <Link href={item.href} className="font-sans text-body-tall text-ink hover:underline">
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <FooterQuickLinks items={footerQuickLinks} />
           </nav>
 
           {/* Feedback — CONTENT TODO: this column is lorem ipsum in Figma, including its heading */}
