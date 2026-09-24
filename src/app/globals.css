@@ -65,6 +65,11 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    /* `100vw` includes the scrollbar's own width, which the real viewport doesn't - so the vw-based full-bleed
+       dividers on the FAQ/Privacy/Cookie pages (see LegalRow.tsx) overflow by a few px and trigger a horizontal
+       scrollbar. This is the standard fix: clip that harmless sliver site-wide rather than trying to account
+       for a scrollbar width that varies by OS/browser and isn't reliably readable from CSS alone. */
+    overflow-x: hidden;
   }
   body {
     background: var(--color-bone);

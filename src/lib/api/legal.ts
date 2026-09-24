@@ -1,5 +1,5 @@
 import { faqCategories } from "@/data/faqs";
-import { cookieCategories, cookieIntro } from "@/data/legal-cookies";
+import { browserCookieLinks, cookieSections } from "@/data/legal-cookies";
 import { privacyDocument } from "@/data/legal-privacy";
 import { termsDocument } from "@/data/legal-terms";
 import type { FaqCategory, LegalDocument } from "@/types/legal";
@@ -18,5 +18,5 @@ export async function getPrivacyPolicy(): Promise<LegalDocument> {
 }
 
 export async function getCookieInfo() {
-  return { intro: cookieIntro, categories: cookieCategories };
+  return { sections: cookieSections, browserLinks: browserCookieLinks };
 }
