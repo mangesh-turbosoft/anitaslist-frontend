@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { StubPage } from "@/components/app/StubPage";
+import { ExpertAdviceHubPage } from "@/components/advice/ExpertAdviceHubPage";
+import { transportAdviceTopics } from "@/data/expert-advice";
 
-export const metadata: Metadata = { title: "Expert advice", robots: { index: false } };
+export const metadata: Metadata = { title: "Expert advice" };
 
-/** Linked from the design; no frame exists for it (plan section 3). */
+/** Figma 1252:2 ("Expert Advice hub (Not AI)"). */
 export default function Page() {
-  return <StubPage title="Expert advice" />;
+  return <ExpertAdviceHubPage topics={transportAdviceTopics} />;
 }
