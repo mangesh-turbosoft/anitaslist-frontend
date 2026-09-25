@@ -4,19 +4,30 @@ const generic1 = { src: "/images/category-generic-1-476x585.webp", alt: "", widt
 const generic2 = { src: "/images/category-generic-2-476x585.webp", alt: "", width: 476, height: 585 };
 const generic3 = { src: "/images/category-generic-3-476x585.webp", alt: "", width: 476, height: 585 };
 
-/** Only Transport's subcategories are drawn (Browse all products, 190:5514 sidebar) - the rest are CONTENT TODO. */
+/**
+ * Only Transport's subcategories are drawn - the rest are CONTENT TODO. Full 18-item list matches the
+ * "View all X" links on the Product category template (Figma 1317:1532); "Rain covers and mosquito nets"
+ * is genuinely one combined row there, not two.
+ */
 const transportSubcategories = [
   "Newborn car seats",
   "Car seat bases",
   "Car seat accessories",
   "Pushchairs",
   "Carrycots and seats",
-  "Pushchair Accessories",
-  "Rain covers",
-  "Mosquito nets",
-  "Footmuffs",
+  "Pushchair accessories",
+  "Rain covers and mosquito nets",
+  "Foot muffs",
   "Sheepskin liners",
   "Liners & snugglers",
+  "Adapters",
+  "Transport accessories",
+  "Baby carriers",
+  "Baby carrier accessories",
+  "Changing bags",
+  "Transport and protection bags",
+  "Luggage",
+  "Toddler car seats",
 ].map((name) => ({ slug: name.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""), name }));
 
 /**

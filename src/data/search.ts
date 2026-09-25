@@ -1,5 +1,25 @@
 import { categories } from "@/data/categories";
-import type { SearchResults } from "@/types/content";
+import { retailers } from "@/data/retailers";
+import type { NoteSlide, Product, SearchResults } from "@/types/content";
+
+export const searchNotes: NoteSlide[] = [1, 2, 3, 4].map((n) => ({
+  id: `search-note-${n}`,
+  image: { src: "/images/cover-a-213x197.webp", alt: "", width: 213, height: 197 },
+  text: "“Lorem ipsum dolor sit amet consectetur. Id ornare egestas semper aenean faucibus scelerisque. Nibh volutpat a egestas amet blandit sit venenatis. Vestibulum egestas pellentesque lacus tincidunt.”",
+  video: { label: "Watch video", href: "/expert-advice" },
+}));
+
+/** "Best sellers" row shown on the search pages (Figma 1313:2 / 1317:1151) before/alongside real results. */
+export const searchBestSellers: Product[] = [0, 1, 2, 3, 4, 5].map((n) => ({
+  id: `search-best-seller-${n}`,
+  name: n === 0 ? "Bugaboo Fox 5 Renew" : "Lorem ipsum dolor sit amet consectetur et dolore",
+  brand: n === 0 ? "Bugaboo" : retailers[n % retailers.length]!.name,
+  price: "From £00.00",
+  rating: { value: "4.7", count: "17.7k" },
+  image: { src: "/images/product-thumb.webp", alt: "", width: 248, height: 248 },
+  tag: n % 3 === 0 ? "Best seller" : n % 3 === 1 ? "Out of stock" : null,
+  options: { colour: ["Black", "White", "Grey"], size: ["Medium", "Small", "Large"] },
+}));
 
 /** The one real product in the fixture data (see product-detail.ts) - the only product search can honestly match. */
 const REAL_PRODUCT = {

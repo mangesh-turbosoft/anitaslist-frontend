@@ -1,14 +1,17 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
 import { sendContactMessage, type ContactState } from "@/app/actions/contact";
-import { Button, Input, Textarea } from "@/components/ui";
+import { Button, Checkbox, Divider, Input, Select, Textarea } from "@/components/ui";
+
+const CONTACT_TOPICS = ["General enquiry", "Order support", "Partnerships", "Press", "Something else"];
 
 const initial: ContactState = { status: "idle" };
 
 /**
- * "Still have a question? Contact us!" form, as published at anitaslist.com/pages/faqs
- * (Name, Email, Comment, "Send"). No Figma frame exists for this — built with the site's shared Input/Textarea/Button.
+ * Contact page form (Figma 1348:12214, "Form" 637x498): First name / Last name / Email / "Select an option"
+ * topic dropdown / Message, a hairline, terms checkbox, "Submit message" button.
  */
 export function ContactForm() {
   const [state, action, pending] = useActionState(sendContactMessage, initial);
@@ -24,16 +27,54 @@ export function ContactForm() {
   }
 
   return (
-    <form action={action} noValidate className="flex w-full flex-col gap-4">
-      <Input label="Name" name="name" showLabel autoComplete="name" placeholder="Name" required error={f.name} />
-      <Input label="Email" name="email" type="email" showLabel autoComplete="email" placeholder="Email" required error={f.email} />
-      <Textarea label="Comment" name="comment" showLabel placeholder="Comment" required error={f.comment} className="[&_textarea]:min-h-[160px]" />
-      {/* text-align centers the button's inline-flex box directly - see LoginForm for the same pattern and why. */}
-      <div className="text-center">
-        <Button type="submit" disabled={pending} className="w-[129px] px-0">
-          Send
-        </Button>
+    <form action={action} noValidate className="flex w-full flex-col gap-[10px]">
+      <Input label="First name" name="firstName" autoComplete="given-name" placeholder="First name" required error={f.firstName} />
+      <Input label="Last name" name="lastName" autoComplete="family-name" placeholder="Last name" required error={f.lastName} />
+      <Input label="Email" name="email" type="email" autoComplete="email" placeholder="Email" required error={f.email} />
+      <Select
+        label="Select an option"
+        name="topic"
+        showLabel={false}
+        options={CONTACT_TOPICS.map((t) => ({ value: t, label: t }))}
+        renderValue={(selected) => selected?.label ?? "Select an option"}
+        className="w-full"
+        fieldClassName="h-[50px] w-full bg-sand/50 pl-[10px] font-sans text-body text-ink/50"
+        chevronClassName="h-[50px] w-[49px] bg-terracotta text-cream"
+      />
+      {f.topic && (
+        <p role="alert" className="-mt-1 text-meta text-terracotta">
+          {f.topic}
+        </p>
+      )}
+      <Textarea label="Message" name="message" placeholder="Enter your name" required error={f.message} className="[&_textarea]:min-h-[120px]" />
+
+      <Divider className="my-1" />
+
+      <div className="mb-3">
+        <Checkbox
+          name="agreed"
+          variant="filled"
+          align="center"
+          label={
+            <span className="text-legal text-ink">
+              By clicking the submit button, I declare that I have read the Terms of service and accept the{" "}
+              <Link href="/privacy" className="underline underline-offset-2">
+                Privacy Policy
+              </Link>
+              .
+            </span>
+          }
+        />
+        {f.agreed && (
+          <p role="alert" className="mt-1 text-meta text-terracotta">
+            {f.agreed}
+          </p>
+        )}
       </div>
+
+      <Button type="submit" disabled={pending} className="w-[179px] px-0">
+        Submit message
+      </Button>
     </form>
   );
 }

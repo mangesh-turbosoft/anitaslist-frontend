@@ -175,24 +175,8 @@ export type BrowseProductsContent = {
   categories: Category[];
 };
 
-/** Grid card on the category page - simpler than the full sample-list ProductCard (no rating/brand/add-to-list panel). */
+/** Grid card on search results - simpler than the full ProductCard (no rating/brand/add-to-list panel). */
 export type CategoryProduct = { id: string; slug: string; name: string; price: string; image: ImageAsset | null };
-
-export type CategoryPageContent = {
-  trail: Link[];
-  current: string;
-  /** rich */
-  heading: string;
-  /** Reuses NoteSlider; the single drawn quote is repeated so its dots have something to page through. */
-  notes: NoteSlide[];
-  description: string;
-  categories: Category[];
-  activeCategorySlug: string;
-  activeSubcategorySlug: string | null;
-  products: CategoryProduct[];
-  page: number;
-  totalPages: number;
-};
 
 export type BuyingOption = { id: string; retailer: string; href: string };
 export type ProductSpecific = { id: string; label: string; detail: string };
@@ -204,11 +188,43 @@ export type ProductDetail = {
   trail: Link[];
   name: string;
   price: string;
+  rating: ProductRating;
+  options: { colour: string[]; size: string[] };
   /** Figma draws plain placeholder boxes, no real photography yet - null renders the "Product image" placeholder. */
   gallery: (ImageAsset | null)[];
   buyingOptions: BuyingOption[];
   description: string;
   specifics: ProductSpecific[];
+  notes: NoteSlide[];
+  relevantProducts: ProductsRow;
+};
+
+/* ---------- Product listing (category / subcategory / retailer) - Figma 1317:1532, 1317:5483, 1348:11415 ---------- */
+
+export type Retailer = {
+  id: string;
+  slug: string;
+  name: string;
+  logo?: ImageAsset;
+  color?: string;
+  image: ImageAsset;
+  letter: string;
+};
+
+/** Shared "browse products" template: sidebar filter + one carousel row per subcategory. */
+export type ProductListingContent = {
+  trail: Link[];
+  current: string;
+  /** rich */
+  heading: string;
+  notes: NoteSlide[];
+  subcategories: Subcategory[];
+  /** "Retailers" sidebar filter group - omitted on the Individual retailer page itself. */
+  retailers?: Retailer[];
+  productCount: number;
+  /** Base path each row's "View all X" link is built from: `${subcategoryBasePath}/${row.id}`. */
+  subcategoryBasePath: string;
+  rows: ProductsRow[];
 };
 
 /** A subcategory match, kept with its parent category so the link and label have context. */

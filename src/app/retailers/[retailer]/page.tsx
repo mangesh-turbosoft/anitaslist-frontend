@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
 import { ListSelectionProvider } from "@/components/lists/ListSelection";
 import { ProductListingPage } from "@/components/products/ProductListingPage";
-import { getCategoryPageContent, getUserLists } from "@/lib/api/content";
+import { getRetailerPageContent, getUserLists } from "@/lib/api/content";
 
-type Props = { params: Promise<{ category: string }> };
+type Props = { params: Promise<{ retailer: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { category } = await params;
-  const content = await getCategoryPageContent(category);
+  const { retailer } = await params;
+  const content = await getRetailerPageContent(retailer);
   return { title: content.current };
 }
 
-/** Products/Category Template (Figma 1317:1532), no subcategory - destination of the homepage category carousel. */
+/** Individual retailer page (Figma 1348:11415) - reuses the shared filter-sidebar + carousel-rows template. */
 export default async function Page({ params }: Props) {
-  const { category } = await params;
-  const [content, lists] = await Promise.all([getCategoryPageContent(category), getUserLists()]);
+  const { retailer } = await params;
+  const [content, lists] = await Promise.all([getRetailerPageContent(retailer), getUserLists()]);
   return (
     <ListSelectionProvider lists={lists}>
       <ProductListingPage content={content} />

@@ -4,6 +4,7 @@ import { categories } from "@/data/categories";
 import { categoryPageContent } from "@/data/category-page";
 import { homeContent } from "@/data/home";
 import { productDetail } from "@/data/product-detail";
+import { getRetailer, retailerPageContent, retailers } from "@/data/retailers";
 import { sampleListDetail } from "@/data/sample-list-detail";
 import { sampleListsContent } from "@/data/sample-lists";
 import { searchContent } from "@/data/search";
@@ -12,9 +13,10 @@ import type {
   AboutContent,
   BrowseProductsContent,
   Category,
-  CategoryPageContent,
   HomeContent,
   ProductDetail,
+  ProductListingContent,
+  Retailer,
   SampleListDetail,
   SampleListsContent,
   SearchResults,
@@ -53,8 +55,8 @@ export async function getBrowseProductsContent(): Promise<BrowseProductsContent>
   return browseProductsContent;
 }
 
-export async function getCategoryPageContent(categorySlug: string, subcategorySlug?: string, page?: number): Promise<CategoryPageContent> {
-  return categoryPageContent(categorySlug, subcategorySlug, page);
+export async function getCategoryPageContent(categorySlug: string, subcategorySlug?: string): Promise<ProductListingContent> {
+  return categoryPageContent(categorySlug, subcategorySlug);
 }
 
 export async function getProductDetail(categorySlug: string, subcategorySlug: string, productSlug: string): Promise<ProductDetail> {
@@ -63,4 +65,16 @@ export async function getProductDetail(categorySlug: string, subcategorySlug: st
 
 export async function getSearchResults(query: string): Promise<SearchResults> {
   return searchContent(query);
+}
+
+export async function getRetailers(): Promise<Retailer[]> {
+  return retailers;
+}
+
+export async function getRetailerBySlug(slug: string): Promise<Retailer | undefined> {
+  return getRetailer(slug);
+}
+
+export async function getRetailerPageContent(slug: string): Promise<ProductListingContent> {
+  return retailerPageContent(slug);
 }

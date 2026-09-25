@@ -126,7 +126,7 @@ export function ProductCard(product: Product) {
   );
 }
 
-function OptionSelect({ label, options, className }: { label: string; options: string[]; className?: string }) {
+export function OptionSelect({ label, options, className }: { label: string; options: string[]; className?: string }) {
   return (
     <div className={`flex h-10 items-center ${className ?? ""}`}>
       <span className="w-[90px] font-sans text-body">{label}</span>

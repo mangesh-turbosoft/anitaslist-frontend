@@ -31,7 +31,7 @@ export const homeContent: HomeContent = {
       id: `step-${n}`,
       text: "<em>Sit amet consectetur. Bibendum </em>odio sit amet aliquam sit.",
     })),
-    cta: { label: "How it works", href: "/about" }, // destination inferred - plan section 11
+    cta: { label: "How it works", href: "/how-it-works" },
   },
 
   expertAdvice: {

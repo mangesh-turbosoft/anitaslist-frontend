@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { CategoryTemplatePage } from "@/components/products/CategoryTemplatePage";
-import { getCategoryPageContent } from "@/lib/api/content";
+import { ListSelectionProvider } from "@/components/lists/ListSelection";
+import { ProductListingPage } from "@/components/products/ProductListingPage";
+import { getCategoryPageContent, getUserLists } from "@/lib/api/content";
 
-type Props = { params: Promise<{ category: string; subcategory: string }>; searchParams: Promise<{ page?: string }> };
+type Props = { params: Promise<{ category: string; subcategory: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category, subcategory } = await params;
@@ -10,9 +11,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: content.current };
 }
 
-/** Figma 190:5514 "Products/Category Template (desktop)" with a subcategory selected (breadcrumb "Products | Transport | Pushchairs"). */
-export default async function Page({ params, searchParams }: Props) {
-  const [{ category, subcategory }, { page }] = await Promise.all([params, searchParams]);
-  const content = await getCategoryPageContent(category, subcategory, page ? Number(page) : undefined);
-  return <CategoryTemplatePage content={content} />;
+/** Products/Subcategory Template (Figma 1317:5483) - breadcrumb "Products | Transport | Pushchairs". */
+export default async function Page({ params }: Props) {
+  const { category, subcategory } = await params;
+  const [content, lists] = await Promise.all([getCategoryPageContent(category, subcategory), getUserLists()]);
+  return (
+    <ListSelectionProvider lists={lists}>
+      <ProductListingPage content={content} />
+    </ListSelectionProvider>
+  );
 }
